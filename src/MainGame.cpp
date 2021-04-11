@@ -1,17 +1,17 @@
 #include <iostream>
 
 #include "MainGame.h"
+#include "ImageLoader.h"
 #include "Sprite.h"
 #include "GLSLProgram.h"
 #include "SDL.h"
-#include "SDL_events.h"
-#include "SDL_video.h"
 #include "glad/glad.h"
-#include "spdlog/spdlog.h"
+#include "Log.h"
 
 MainGame::MainGame()
-    :_window(nullptr),
-    _gameState(GameState::PLAY)
+    :_window(nullptr)
+    ,_gameState(GameState::PLAY)
+    ,_time(0)
 {
 }
 
@@ -22,16 +22,19 @@ MainGame::~MainGame()
 void MainGame::run()
 {
     initSystems();    
-
-    _sprite.init(-1, -1, 1, 1);
-
+    _sprite.init(0, 0, 0.5, 0.5);
+    _texture = ImageLoader::loadPng("/home/parth/dev/opengl/res/textures/wood.png");
+    _texture2 = ImageLoader::loadPng("/home/parth/dev/opengl/res/textures/concrete.png");
     gameLoop();
 }
 
 void MainGame::initShaders()
 {
-    _program.compileShaders("/home/parth/dev/opengl/res/shaders/colorshading.vert","/home/parth/dev/opengl/res/shaders/colorshading.frag");
+    _program.compileShaders("/home/parth/dev/opengl/res/shaders/colorshading.vert"
+                           ,"/home/parth/dev/opengl/res/shaders/colorshading.frag");
     _program.addAttribute("vertexPosition");
+    _program.addAttribute("vertexColor");
+    _program.addAttribute("vertexUV");
     _program.linkShaders();
 }
 
@@ -47,23 +50,25 @@ void MainGame::initSystems()
                                SDL_WINDOW_OPENGL);
 
     if (!_window) {
-        spdlog::error("SDL failed to create a window");
+        ERROR("SDL failed to create a window");
     }
 
     SDL_GLContext glContext = SDL_GL_CreateContext(_window);
 
     if (!glContext) {
-        spdlog::error("GLContext could not be created");
+        ERROR("GLContext could not be created");
     }
     if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
-        spdlog::error("Glad was unable to load");
+        ERROR("Glad was unable to load");
     }
 
-    spdlog::info("OpenGL version: {}", glGetString(GL_VERSION));
+    Log::init();
+
+    INFO("OpenGL version: {}", glGetString(GL_VERSION));
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     initShaders();
-    glClearColor(0, 0, 1, 1.0);
+    glClearColor(1, 1, 1, 1.0);
 }
 
 void MainGame::processInput()
@@ -86,7 +91,20 @@ void MainGame::drawGame()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     _program.bind();
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, _texture.id);
+    GLint texture = _program.getUniformLocation("sampler");
+    glUniform1i(texture, 0); 
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, _texture2.id);
+    texture = _program.getUniformLocation("sampler2");
+    glUniform1i(texture, 1); 
+
     _sprite.draw();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
     _program.unbind();
 
     SDL_GL_SwapWindow(_window);
@@ -97,5 +115,6 @@ void MainGame::gameLoop()
     while (_gameState == GameState::PLAY) {
         processInput();
         drawGame();
+        _time += 0.01;
     }
 }

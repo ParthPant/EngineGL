@@ -1,6 +1,6 @@
 #include "GLSLProgram.h"
 #include "glad/glad.h"
-#include "spdlog/spdlog.h"
+#include "Log.h"
 #include <fstream>
 
 GLSLProgram::GLSLProgram()
@@ -22,8 +22,6 @@ void GLSLProgram::addAttribute(std::string const &name)
 
 void GLSLProgram::linkShaders()
 {
-    _programID = glCreateProgram();
-
     glAttachShader(_programID, _vertexShaderID);
     glAttachShader(_programID, _fragmentShaderID);
 
@@ -41,8 +39,8 @@ void GLSLProgram::linkShaders()
 
         glDeleteProgram(_programID);
 
-        spdlog::error("Program failed to link shaders:");
-        spdlog::info(&infoLog[0]);
+        ERROR("Program failed to link shaders:");
+        INFO(&infoLog[0]);
     }
 
     glDeleteShader(_fragmentShaderID);
@@ -52,13 +50,13 @@ void GLSLProgram::linkShaders()
 void GLSLProgram::compileShaders(std::string const &vertexShaderFile,
                                  std::string const &fragmentShaderFile)
 {
-
+    _programID = glCreateProgram();
     _vertexShaderID = glCreateShader(GL_VERTEX_SHADER); 
     if (!_vertexShaderID)
-        spdlog::error("Failed to create vertex shader");
+        ERROR("Failed to create vertex shader");
     _fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
     if (!_fragmentShaderID)
-        spdlog::error("Failed to create vertex shader");
+        ERROR("Failed to create vertex shader");
 
     compile(vertexShaderFile, _vertexShaderID);
     compile(fragmentShaderFile, _fragmentShaderID);
@@ -69,7 +67,7 @@ void GLSLProgram::compile(std::string const &filename,  GLuint id)
 
     std::ifstream vertFile(filename);
     if (vertFile.fail())
-        spdlog::error("Failed to open" + filename);
+        ERROR("Failed to open" + filename);
 
     std::string filecontents = "";
     std::string line;
@@ -89,7 +87,7 @@ void GLSLProgram::compile(std::string const &filename,  GLuint id)
         glGetShaderInfoLog(id, maxlength, &maxlength, &error[0]); 
 
         glDeleteShader(id);
-        spdlog::error("Shader failed to compile:" + filename);
+        ERROR("Shader failed to compile:" + filename);
         spdlog::error(&error[0]);
     }
 }
@@ -106,4 +104,12 @@ void GLSLProgram::unbind()
     glUseProgram(0);
     for (int i = 0; i < _numAttributes; i++) 
         glDisableVertexAttribArray(i);
+}
+
+GLuint GLSLProgram::getUniformLocation(std::string const &name) const 
+{
+    GLint loc = glGetUniformLocation(_programID, name.c_str());
+    if (loc == GL_INVALID_INDEX)
+        WARN("Uniform "+name+" not found");
+    return loc;
 }

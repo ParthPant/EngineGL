@@ -13,6 +13,7 @@ public:
     void bind();
     void unbind();
     void addAttribute(std::string const &name);
+    GLuint getUniformLocation(std::string const &name) const;
 private:
     GLuint _programID; 
 

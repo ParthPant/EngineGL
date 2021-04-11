@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GLTexture.h"
 #include "SDL.h"
 #include "Sprite.h"
 #include "GLSLProgram.h"
@@ -29,5 +30,9 @@ private:
 
     GameState _gameState;
     Sprite _sprite;
+    GLTexture _texture;
+    GLTexture _texture2;
     GLSLProgram _program;
+
+    float _time;
 };
