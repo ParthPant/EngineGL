@@ -1,3 +1,3 @@
-[submodule "src/3rdparty/spdlog"]
+[submodule "Engine/src/3rdparty/spdlog"]
 	path = src/3rdparty/spdlog
 	url = git@github.com:gabime/spdlog.git
