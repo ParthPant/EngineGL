@@ -2,6 +2,7 @@
 
 #include "GLTexture.h"
 #include "Sprite.h"
+#include "Camera2D.h"
 #include "GLSLProgram.h"
 #include "Window.h"
 #include <vector>
@@ -34,6 +35,7 @@ private:
     std::vector<Engine::Sprite *> _sprites;
     Engine::GLTexture _texture;
     Engine::GLSLProgram _program;
+    Engine::Camera2D _camera;
 
     float _time;
     float _fps;

@@ -51,10 +51,10 @@ void Sprite::init(float x, float y, float width, float height, std::string const
     
     Vertex vertexData[6];
     vertexData[0].setPosition(x+width, y+height);
-    vertexData[1].setPosition(x-width, y+height);
-    vertexData[2].setPosition(x-width, y-height);
-    vertexData[3].setPosition(x-width, y-height);
-    vertexData[4].setPosition(x+width, y-height);
+    vertexData[1].setPosition(x      , y+height);
+    vertexData[2].setPosition(x      , y       );
+    vertexData[3].setPosition(x      , y       );
+    vertexData[4].setPosition(x+width, y       );
     vertexData[5].setPosition(x+width, y+height);
 
     vertexData[0].setColor(0, 0, 255);

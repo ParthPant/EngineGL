@@ -9,9 +9,11 @@ set (opengl_src
     TextureCache.cpp
     Window.cpp
     Engine.cpp
+    Camera2D.cpp
 
     #header files MainGame.h Sprite.h
     GLSLProgram.h
+    Camera2D.h
     Window.h
     Engine.h
     IOManager.h

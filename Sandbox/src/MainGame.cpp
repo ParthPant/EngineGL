@@ -4,6 +4,7 @@
 #include "ImageLoader.h"
 #include "Sprite.h"
 #include "Window.h"
+#include "Camera2D.h"
 #include "GLSLProgram.h"
 #include "Log.h"
 #include "Engine.h"
@@ -11,6 +12,8 @@
 MainGame::MainGame()
     :_gameState(GameState::PLAY)
     ,_time(0)
+    ,_screenWidth(1024)
+    ,_screenHeight(768)
     ,_maxFps(60.0f)
 {
 }
@@ -27,11 +30,10 @@ void MainGame::run()
 {
     initSystems();    
 
-    for (int i=0; i<2; i++)
-        _sprites.push_back(new Engine::Sprite());
+    _sprites.push_back(new Engine::Sprite());
 
-    for (int i = 0; i < _sprites.size(); i++)
-        _sprites[i]->init(-0.5+i, 0.5, 0.5, 0.5, "/home/parth/dev/opengl/Sandbox/res/textures/wood.png");
+    for (auto sprite : _sprites)
+        sprite->init(0, 0, _screenWidth/2, _screenHeight/2, "/home/parth/dev/opengl/Sandbox/res/textures/wood.png");
 
     gameLoop();
 }
@@ -50,7 +52,8 @@ void MainGame::initSystems()
 {
     Engine::Log::init();
     Engine::init();
-    _window.createWindow("Sandbox", _screenWidth, _screenHeight, Engine::FULLSCREEN);
+    _camera.init(_screenWidth, _screenHeight);
+    _window.createWindow("Sandbox", _screenWidth, _screenHeight, 0);
     initShaders();
     glClearColor(1, 1, 1, 1.0);
 }
@@ -58,12 +61,38 @@ void MainGame::initSystems()
 void MainGame::processInput()
 {
     SDL_Event event;
+
+    const float cam_speed = 20.0f;
+    const float scale_speed = 0.1f;
+
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
             case SDL_QUIT:
                 _gameState = GameState::EXIT;
                 break;
             case SDL_MOUSEMOTION:
+                break;
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym) {
+                    case SDLK_w:
+                        _camera.setPosition(_camera.getPosition()+glm::vec2(0, cam_speed));
+                        break;
+                    case SDLK_s:
+                        _camera.setPosition(_camera.getPosition()+glm::vec2(0, -cam_speed));
+                        break;
+                    case SDLK_a:
+                        _camera.setPosition(_camera.getPosition()+glm::vec2(-cam_speed, 0));
+                        break;
+                    case SDLK_d:
+                        _camera.setPosition(_camera.getPosition()+glm::vec2(cam_speed, 0));
+                        break;
+                    case SDLK_q:
+                        _camera.setScale(_camera.getScale() + scale_speed);
+                        break;
+                    case SDLK_e:
+                        _camera.setScale(_camera.getScale() - scale_speed);
+                        break;
+                }
                 break;
         }
     }
@@ -83,6 +112,9 @@ void MainGame::drawGame()
     GLint time = _program.getUniformLocation("time");
     glUniform1f(time, _time);
 
+    GLint mat = _program.getUniformLocation("P");
+    glUniformMatrix4fv(mat, 1, GL_FALSE, &(_camera.getCamMatrix()[0][0]));
+
     for (Engine::Sprite *s : _sprites)
         s->draw();
 
@@ -98,7 +130,9 @@ void MainGame::gameLoop()
         float startTicks = SDL_GetTicks();
 
         processInput();
+        _camera.update();
         drawGame();
+
         _time += 0.01;
         calculateFps();
 
