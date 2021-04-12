@@ -3,6 +3,8 @@
 #include "spdlog/spdlog.h"
 #include <memory>
 
+namespace Engine{
+
 class Log{
 public:
     static void init();
@@ -13,7 +15,9 @@ private:
     static std::shared_ptr<spdlog::logger> _logger;
 };
 
-#define ERROR(...) ::Log::getLogger()->error(__VA_ARGS__)
-#define WARN(...) ::Log::getLogger()->warn(__VA_ARGS__)
-#define INFO(...) ::Log::getLogger()->info(__VA_ARGS__)
-#define TRACE(...) ::Log::getLogger()->trace(__VA_ARGS__)
+#define ERROR(...) Log::getLogger()->error(__VA_ARGS__)
+#define WARN(...) Log::getLogger()->warn(__VA_ARGS__)
+#define INFO(...) Log::getLogger()->info(__VA_ARGS__)
+#define TRACE(...) Log::getLogger()->trace(__VA_ARGS__)
+
+}

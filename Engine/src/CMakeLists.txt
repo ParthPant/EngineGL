@@ -7,9 +7,13 @@ set (opengl_src
     ImageLoader.cpp
     ResourceManager.cpp
     TextureCache.cpp
+    Window.cpp
+    Engine.cpp
 
     #header files MainGame.h Sprite.h
     GLSLProgram.h
+    Window.h
+    Engine.h
     IOManager.h
     Log.h
     ImageLoader.h

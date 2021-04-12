@@ -5,6 +5,8 @@
 
 #include <utility>
 
+namespace Engine{
+
 GLTexture TextureCache::getTexture(std::string const &filepath)
 {
     auto tex = _cache.find(filepath);
@@ -17,4 +19,6 @@ GLTexture TextureCache::getTexture(std::string const &filepath)
         //TRACE("texture loaded and cached");
         return texture;
     }
+}
+
 }

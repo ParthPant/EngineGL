@@ -3,6 +3,8 @@
 #include "stb_image.h"
 #include "Log.h"
 
+namespace Engine{
+
 GLTexture ImageLoader::loadPng(std::string const &filepath)
 {
     int width, height, i;
@@ -27,4 +29,6 @@ GLTexture ImageLoader::loadPng(std::string const &filepath)
 
     stbi_image_free(data);
     return texture;
+}
+
 }

@@ -3,6 +3,8 @@
 #include "glad/glad.h"
 #include <string>
 
+namespace Engine {
+
 class GLSLProgram{
 public:
     GLSLProgram();
@@ -23,3 +25,5 @@ private:
 
     void compile(std::string const &filename, GLuint id);
 };
+
+}

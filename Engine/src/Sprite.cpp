@@ -2,6 +2,8 @@
 #include "ResourceManager.h"
 #include <cstddef>
 
+namespace Engine{
+
 Sprite::Sprite()
     :_vboID(0)
     ,_texture({0,0,0})
@@ -75,4 +77,6 @@ void Sprite::init(float x, float y, float width, float height, std::string const
 
     if (!texture_path.empty())
         _texture = ResourceManager::getTexture(texture_path);
+}
+
 }

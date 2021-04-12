@@ -3,6 +3,8 @@
 
 #include <fstream>
 
+namespace Engine{
+
 bool IOManager::read_file_to_buffer(std::vector<char> &buffer, std::string const &filepath)
 {
     std::ifstream file(filepath, std::ios::binary);
@@ -22,4 +24,6 @@ bool IOManager::read_file_to_buffer(std::vector<char> &buffer, std::string const
     file.close();
 
     return true;
+}
+
 }

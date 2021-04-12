@@ -3,6 +3,8 @@
 #include "Log.h"
 #include <fstream>
 
+namespace Engine {
+
 GLSLProgram::GLSLProgram()
     :_programID(0)
     ,_fragmentShaderID(0)
@@ -112,4 +114,6 @@ GLuint GLSLProgram::getUniformLocation(std::string const &name) const
     if (loc == GL_INVALID_INDEX)
         WARN("Uniform "+name+" not found");
     return loc;
+}
+
 }

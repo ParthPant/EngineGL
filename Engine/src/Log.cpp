@@ -1,6 +1,8 @@
 #include "Log.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
+namespace Engine{
+
 std::shared_ptr<spdlog::logger> Log::_logger;
 
 void Log::init()
@@ -11,3 +13,4 @@ void Log::init()
     _logger->set_level(spdlog::level::trace);
 }
 
+}

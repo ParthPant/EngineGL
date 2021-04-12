@@ -4,6 +4,8 @@
 #include <glad/glad.h>
 #include <string>
 
+namespace Engine{
+
 struct Vertex{
     struct Postition
     {
@@ -60,3 +62,5 @@ private:
 
     GLuint _vboID;
 };
+
+}

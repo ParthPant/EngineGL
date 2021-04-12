@@ -2,17 +2,14 @@
 
 #include "MainGame.h"
 #include "ImageLoader.h"
-#include "SDL_timer.h"
-#include "SDL_video.h"
 #include "Sprite.h"
+#include "Window.h"
 #include "GLSLProgram.h"
-#include "SDL.h"
-#include "glad/glad.h"
 #include "Log.h"
+#include "Engine.h"
 
 MainGame::MainGame()
-    :_window(nullptr)
-    ,_gameState(GameState::PLAY)
+    :_gameState(GameState::PLAY)
     ,_time(0)
     ,_maxFps(60.0f)
 {
@@ -31,7 +28,7 @@ void MainGame::run()
     initSystems();    
 
     for (int i=0; i<2; i++)
-        _sprites.push_back(new Sprite());
+        _sprites.push_back(new Engine::Sprite());
 
     for (int i = 0; i < _sprites.size(); i++)
         _sprites[i]->init(-0.5+i, 0.5, 0.5, 0.5, "/home/parth/dev/opengl/Sandbox/res/textures/wood.png");
@@ -51,37 +48,9 @@ void MainGame::initShaders()
 
 void MainGame::initSystems()
 {
-    Log::init();
-
-    SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-    _window = SDL_CreateWindow("Game",
-                               SDL_WINDOWPOS_CENTERED,
-                               SDL_WINDOWPOS_CENTERED,
-                               _screenWidth,
-                               _screenHeight,
-                               SDL_WINDOW_OPENGL);
-
-    if (!_window) {
-        ERROR("SDL failed to create a window");
-    }
-
-    SDL_GLContext glContext = SDL_GL_CreateContext(_window);
-
-    if (!glContext) {
-        ERROR("GLContext could not be created");
-    }
-    if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
-        ERROR("Glad was unable to load");
-    }
-
-
-    INFO("OpenGL version: {}", glGetString(GL_VERSION));
-    
-    //set VSYNC
-    SDL_GL_SetSwapInterval(1);
-
+    Engine::Log::init();
+    Engine::init();
+    _window.createWindow("Sandbox", _screenWidth, _screenHeight, Engine::FULLSCREEN);
     initShaders();
     glClearColor(1, 1, 1, 1.0);
 }
@@ -114,13 +83,13 @@ void MainGame::drawGame()
     GLint time = _program.getUniformLocation("time");
     glUniform1f(time, _time);
 
-    for (Sprite *s : _sprites)
+    for (Engine::Sprite *s : _sprites)
         s->draw();
 
     glBindTexture(GL_TEXTURE_2D, 0);
     _program.unbind();
-
-    SDL_GL_SwapWindow(_window);
+    
+    _window.swapBuffers();
 }
 
 void MainGame::gameLoop()
@@ -138,7 +107,7 @@ void MainGame::gameLoop()
         frame_counter ++;
         if (frame_counter % 50 == 0)
         {
-            TRACE("FPS: {}", _fps);
+            Engine::TRACE("FPS: {}", _fps);
             frame_counter = 0;
         }
 
