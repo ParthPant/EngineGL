@@ -30,9 +30,10 @@ include_directories(${SDL2_INCLUDE_DIRS})
 include_directories(3rdparty/glad/include)
 include_directories(3rdparty/spdlog/include)
 include_directories(3rdparty/stb_image)
+include_directories(3rdparty/glm/glm)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(${PROJECT_NAME} ${opengl_src})
 
 target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} glad ${CMAKE_DL_LIBS} spdlog stb_image)
+target_link_libraries(${PROJECT_NAME} glad ${CMAKE_DL_LIBS} spdlog stb_image glm)

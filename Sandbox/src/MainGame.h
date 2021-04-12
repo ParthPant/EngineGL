@@ -1,7 +1,6 @@
 #pragma once
 
 #include "GLTexture.h"
-#include "SDL.h"
 #include "Sprite.h"
 #include "GLSLProgram.h"
 #include "Window.h"
