@@ -1,5 +1,8 @@
 #pragma once
+
+#include "GLTexture.h"
 #include <glad/glad.h>
+#include <string>
 
 struct Vertex{
     struct Postition
@@ -46,12 +49,14 @@ public:
     ~Sprite();
 
     void draw();
-    void init(float x, float y, float width, float height);
+    void init(float x, float y, float width, float height, std::string const &texture_path = "");
 private:
     float _x;
     float _y;
     float _width;
     float _height;
+
+    GLTexture _texture;
 
     GLuint _vboID;
 };

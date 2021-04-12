@@ -6,9 +6,12 @@ in vec4 vertColor;
 in vec2 vertUV;
 
 uniform sampler2D sampler;
-uniform sampler2D sampler2;
+uniform float time;
 
 void main() {
-    vec4 textureColor = mix(texture(sampler, vertUV), texture(sampler2, vertUV), 0.5);
-    color = textureColor;
+    vec4 textureColor = texture(sampler, vertUV);
+    color = textureColor * vertColor * vec4(0.5*(sin(5*time+0.0)+1.0),
+                                            0.5*(sin(5*time+1.0)+1.0),
+                                            0.5*(sin(5*time+2.0)+1.0),
+                                            1.0);
 }

@@ -2,6 +2,7 @@
 
 #include "MainGame.h"
 #include "ImageLoader.h"
+#include "SDL_timer.h"
 #include "Sprite.h"
 #include "GLSLProgram.h"
 #include "SDL.h"
@@ -12,19 +13,28 @@ MainGame::MainGame()
     :_window(nullptr)
     ,_gameState(GameState::PLAY)
     ,_time(0)
+    ,_maxFps(60.0f)
 {
 }
 
 MainGame::~MainGame()
 {
+    for (auto *s : _sprites)
+        delete(s);
+
+    _sprites.clear();
 }
 
 void MainGame::run()
 {
     initSystems();    
-    _sprite.init(0, 0, 0.5, 0.5);
-    _texture = ImageLoader::loadPng("/home/parth/dev/opengl/res/textures/wood.png");
-    _texture2 = ImageLoader::loadPng("/home/parth/dev/opengl/res/textures/concrete.png");
+
+    for (int i=0; i<2; i++)
+        _sprites.push_back(new Sprite());
+
+    for (int i = 0; i < _sprites.size(); i++)
+        _sprites[i]->init(-0.5+i, 0.5, 0.5, 0.5, "/home/parth/dev/opengl/res/textures/wood.png");
+
     gameLoop();
 }
 
@@ -40,6 +50,8 @@ void MainGame::initShaders()
 
 void MainGame::initSystems()
 {
+    Log::init();
+
     SDL_Init(SDL_INIT_EVERYTHING);
 
     _window = SDL_CreateWindow("Game",
@@ -62,7 +74,6 @@ void MainGame::initSystems()
         ERROR("Glad was unable to load");
     }
 
-    Log::init();
 
     INFO("OpenGL version: {}", glGetString(GL_VERSION));
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -93,16 +104,14 @@ void MainGame::drawGame()
     _program.bind();
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, _texture.id);
-    GLint texture = _program.getUniformLocation("sampler");
-    glUniform1i(texture, 0); 
+    GLint sampler = _program.getUniformLocation("sampler");
+    glUniform1i(sampler, 0); 
 
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, _texture2.id);
-    texture = _program.getUniformLocation("sampler2");
-    glUniform1i(texture, 1); 
+    GLint time = _program.getUniformLocation("time");
+    glUniform1f(time, _time);
 
-    _sprite.draw();
+    for (Sprite *s : _sprites)
+        s->draw();
 
     glBindTexture(GL_TEXTURE_2D, 0);
     _program.unbind();
@@ -113,8 +122,51 @@ void MainGame::drawGame()
 void MainGame::gameLoop()
 {
     while (_gameState == GameState::PLAY) {
+        float startTicks = SDL_GetTicks();
+
         processInput();
         drawGame();
         _time += 0.01;
+        calculateFps();
+
+        //print fps every 50 frames
+        static int frame_counter = 0;
+        frame_counter ++;
+        if (frame_counter % 50 == 0)
+        {
+            TRACE("FPS: {}", _fps);
+            frame_counter = 0;
+        }
+
+       //limit fps to _maxFps
+       float frameTicks = startTicks - SDL_GetTicks();
+       if (1000.0f / _maxFps > frameTicks)
+           SDL_Delay(1000.0f/_maxFps - frameTicks);
     }
+}
+
+void MainGame::calculateFps()
+{
+    static const int NUM_SAMPLES = 100;
+    static float frame_times[NUM_SAMPLES];
+    static float prev_tics = SDL_GetTicks();
+    static int curr_frame = 0;
+
+    float current_tics =  SDL_GetTicks();
+
+    _frameTime = current_tics - prev_tics;
+
+    frame_times[curr_frame % NUM_SAMPLES] = _frameTime;
+
+    int count = curr_frame < NUM_SAMPLES ? curr_frame : NUM_SAMPLES;
+    
+    float frame_time_avg = 0;
+    for (int i=0; i<count; i++)
+        frame_time_avg += frame_times[i];
+
+    frame_time_avg = count > 0 ? frame_time_avg/count : 0;
+    _fps = frame_time_avg > 0 ? 1000.0f/frame_time_avg : 0;
+
+    prev_tics = current_tics;
+    curr_frame++;
 }

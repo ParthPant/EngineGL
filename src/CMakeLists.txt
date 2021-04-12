@@ -7,6 +7,8 @@ set (opengl_src
     Log.cpp
     IOManager.cpp
     ImageLoader.cpp
+    ResourceManager.cpp
+    TextureCache.cpp
 
     #header files MainGame.h Sprite.h
     GLSLProgram.h
@@ -14,6 +16,8 @@ set (opengl_src
     Log.h
     ImageLoader.h
     GLTexture.h
+    ResourceManager.h
+    TextureCache.h
     )
 
 add_subdirectory(3rdparty)

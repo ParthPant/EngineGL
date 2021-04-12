@@ -1,8 +1,10 @@
 #include "Sprite.h"
+#include "ResourceManager.h"
 #include <cstddef>
 
 Sprite::Sprite()
     :_vboID(0)
+    ,_texture({0,0,0})
 {
 }
 
@@ -25,13 +27,16 @@ void Sprite::draw()
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
 
+    if (_texture.id)
+        glBindTexture(GL_TEXTURE_2D, _texture.id);
+
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glDisableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Sprite::init(float x, float y, float width, float height)
+void Sprite::init(float x, float y, float width, float height, std::string const &texture_path)
 {
     _x = x;
     _y = y;
@@ -67,4 +72,7 @@ void Sprite::init(float x, float y, float width, float height)
     glBindBuffer(GL_ARRAY_BUFFER, _vboID);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), (void*)vertexData, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    if (!texture_path.empty())
+        _texture = ResourceManager::getTexture(texture_path);
 }
