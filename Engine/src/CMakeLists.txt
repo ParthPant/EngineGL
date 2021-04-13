@@ -10,6 +10,7 @@ set (opengl_src
     Window.cpp
     Engine.cpp
     Camera2D.cpp
+    SpriteBatch.cpp
 
     #header files MainGame.h Sprite.h
     GLSLProgram.h
@@ -22,6 +23,7 @@ set (opengl_src
     GLTexture.h
     ResourceManager.h
     TextureCache.h
+    SpriteBatch.h
     )
 
 add_subdirectory(3rdparty)

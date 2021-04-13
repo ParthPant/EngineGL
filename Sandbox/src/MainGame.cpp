@@ -1,13 +1,16 @@
 #include <iostream>
 
+#include "GLTexture.h"
 #include "MainGame.h"
 #include "ImageLoader.h"
+#include "ResourceManager.h"
 #include "Sprite.h"
 #include "Window.h"
 #include "Camera2D.h"
 #include "GLSLProgram.h"
 #include "Log.h"
 #include "Engine.h"
+#include "fwd.hpp"
 
 MainGame::MainGame()
     :_gameState(GameState::PLAY)
@@ -20,21 +23,11 @@ MainGame::MainGame()
 
 MainGame::~MainGame()
 {
-    for (auto *s : _sprites)
-        delete(s);
-
-    _sprites.clear();
 }
 
 void MainGame::run()
 {
     initSystems();    
-
-    _sprites.push_back(new Engine::Sprite());
-
-    for (auto sprite : _sprites)
-        sprite->init(0, 0, _screenWidth/2, _screenHeight/2, "/home/parth/dev/opengl/Sandbox/res/textures/wood.png");
-
     gameLoop();
 }
 
@@ -53,9 +46,10 @@ void MainGame::initSystems()
     Engine::Log::init();
     Engine::init();
     _camera.init(_screenWidth, _screenHeight);
-    _window.createWindow("Sandbox", _screenWidth, _screenHeight, 0);
+    _window.createWindow("Sandbox", _screenWidth, _screenHeight, Engine::FULLSCREEN);
     initShaders();
     glClearColor(1, 1, 1, 1.0);
+    _spritebatch.init();
 }
 
 void MainGame::processInput()
@@ -109,14 +103,36 @@ void MainGame::drawGame()
     GLint sampler = _program.getUniformLocation("sampler");
     glUniform1i(sampler, 0); 
 
-    GLint time = _program.getUniformLocation("time");
-    glUniform1f(time, _time);
-
     GLint mat = _program.getUniformLocation("P");
     glUniformMatrix4fv(mat, 1, GL_FALSE, &(_camera.getCamMatrix()[0][0]));
 
-    for (Engine::Sprite *s : _sprites)
-        s->draw();
+    GLint time = _program.getUniformLocation("time");
+    glUniform1f(time, _time);
+
+    _spritebatch.begin();
+
+    Engine::GLTexture texture = Engine::ResourceManager::getTexture("/home/parth/dev/opengl/Sandbox/res/textures/sprite.png");
+
+    int n = 20;
+
+    float width = _screenWidth/n;
+    float height = _screenHeight/n;
+
+    for(int i = 0; i<n; i++)
+        for(int j = 0; j<n; j++)
+        {
+            float x = ((float)i/(float)n -                     1) * (float)_screenWidth + (float)_screenWidth/2;
+            float y = (1                 - (float)(j+1)/(float)n) * (float)_screenHeight - (float)_screenHeight/2;
+
+            _spritebatch.draw(glm::vec4(x, y, width, height)
+                             ,glm::vec4(0,0,4,1)
+                             ,0
+                             ,texture.id
+                             ,{255,255,255,255});
+        }
+
+    _spritebatch.end();
+    _spritebatch.renderBatch();
 
     glBindTexture(GL_TEXTURE_2D, 0);
     _program.unbind();

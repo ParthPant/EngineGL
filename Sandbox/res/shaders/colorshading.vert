@@ -6,6 +6,7 @@ layout(location = 2) in vec2 vertexUV;
 
 out vec4 vertColor;
 out vec2 vertUV;
+out vec2 vertPos;
 
 uniform mat4 P;
 
@@ -16,4 +17,5 @@ void main() {
 
     vertColor = vertexColor;
     vertUV = vertexUV;
+    vertPos = vertexPosition;
 }

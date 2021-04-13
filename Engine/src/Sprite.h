@@ -6,26 +6,29 @@
 
 namespace Engine{
 
+struct Color
+{
+    GLubyte r;
+    GLubyte g;
+    GLubyte b;
+    GLubyte a;
+};
+
+struct UV {
+    float u = 1;
+    float v = 1;
+};
+
+struct Position
+{
+    float x;
+    float y;
+};
+
 struct Vertex{
-    struct Postition
-    {
-        float x;
-        float y;
-    } position;
-
-    struct Color
-    {
-        GLubyte r;
-        GLubyte g;
-        GLubyte b;
-        GLubyte a;
-    }color;
-
-    struct UV
-    {
-        float u = 1;
-        float v = 1;
-    }uv;
+    Position position;
+    Color color;
+    UV uv;
 
     void setPosition(float x, float y){ 
         position.x = x;
