@@ -37,6 +37,7 @@ private:
 
     GameState _gameState;
     Engine::GLTexture _texture;
+    Engine::GLTexture _texture2;
     Engine::GLSLProgram _program;
     Engine::Camera2D _camera;
     Engine::SpriteBatch _spritebatch;

@@ -148,7 +148,7 @@ void SpriteBatch::createRenderBatches()
     for (int curr_glyph = 1; curr_glyph < _glyphs.size(); curr_glyph++)
     {
         if (_glyphs[curr_glyph]->texture != _glyphs[curr_glyph-1]->texture)
-            _render_batches.emplace_back(offset, _glyphs[0]->texture, 6);
+            _render_batches.emplace_back(offset, _glyphs[curr_glyph]->texture, 6);
         else
             _render_batches.back()._num_vertices += 6;
 

@@ -49,8 +49,9 @@ void MainGame::initSystems()
     _camera.init(_screenWidth, _screenHeight);
     _window.createWindow("Sandbox", _screenWidth, _screenHeight, 0);
     initShaders();
-    glClearColor(0, 0, 1, 1.0);
+    glClearColor(1, 1, 1, 1.0);
     _texture = Engine::ResourceManager::getTexture("/home/parth/dev/opengl/Sandbox/res/textures/ethereum.png");
+    _texture2 = Engine::ResourceManager::getTexture("/home/parth/dev/opengl/Sandbox/res/textures/joker.png");
     _spritebatch.init();
     _fpslimiter.init(_maxFps);
 }
@@ -120,13 +121,15 @@ void MainGame::drawGame()
     for(int i = 0; i<n; i++)
         for(int j = 0; j<n; j++)
         {
+            int tex = (i+j)%2 == 0 ? _texture.id : _texture2.id;
+
             float x = ((float)i/(float)n -                     1) * (float)_screenWidth + (float)_screenWidth/2;
             float y = (1                 - (float)(j+1)/(float)n) * (float)_screenHeight - (float)_screenHeight/2;
 
             _spritebatch.draw(glm::vec4(x, y, width, height)
                              ,glm::vec4(0,0,1,1)
                              ,0
-                             ,_texture.id
+                             ,tex
                              ,{255,255,255,255});
         }
 
