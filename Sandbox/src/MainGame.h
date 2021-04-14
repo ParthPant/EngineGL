@@ -5,7 +5,9 @@
 #include "Camera2D.h"
 #include "GLSLProgram.h"
 #include "Window.h"
+#include "InputManager.h"
 #include "SpriteBatch.h"
+#include "Timing.h"
 
 #include <vector>
 
@@ -38,6 +40,8 @@ private:
     Engine::GLSLProgram _program;
     Engine::Camera2D _camera;
     Engine::SpriteBatch _spritebatch;
+    Engine::InputManager _inputmanager;
+    Engine::FPSLimiter _fpslimiter;
 
     float _time;
     float _fps;

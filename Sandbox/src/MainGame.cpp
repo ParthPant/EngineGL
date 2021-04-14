@@ -4,6 +4,7 @@
 #include "MainGame.h"
 #include "ImageLoader.h"
 #include "ResourceManager.h"
+#include "SDL_events.h"
 #include "Sprite.h"
 #include "Window.h"
 #include "Camera2D.h"
@@ -46,10 +47,12 @@ void MainGame::initSystems()
     Engine::Log::init();
     Engine::init();
     _camera.init(_screenWidth, _screenHeight);
-    _window.createWindow("Sandbox", _screenWidth, _screenHeight, Engine::FULLSCREEN);
+    _window.createWindow("Sandbox", _screenWidth, _screenHeight, 0);
     initShaders();
     glClearColor(1, 1, 1, 1.0);
+    _texture = Engine::ResourceManager::getTexture("/home/parth/dev/opengl/Sandbox/res/textures/sprite.png");
     _spritebatch.init();
+    _fpslimiter.init(_maxFps);
 }
 
 void MainGame::processInput()
@@ -67,29 +70,30 @@ void MainGame::processInput()
             case SDL_MOUSEMOTION:
                 break;
             case SDL_KEYDOWN:
-                switch (event.key.keysym.sym) {
-                    case SDLK_w:
-                        _camera.setPosition(_camera.getPosition()+glm::vec2(0, cam_speed));
-                        break;
-                    case SDLK_s:
-                        _camera.setPosition(_camera.getPosition()+glm::vec2(0, -cam_speed));
-                        break;
-                    case SDLK_a:
-                        _camera.setPosition(_camera.getPosition()+glm::vec2(-cam_speed, 0));
-                        break;
-                    case SDLK_d:
-                        _camera.setPosition(_camera.getPosition()+glm::vec2(cam_speed, 0));
-                        break;
-                    case SDLK_q:
-                        _camera.setScale(_camera.getScale() + scale_speed);
-                        break;
-                    case SDLK_e:
-                        _camera.setScale(_camera.getScale() - scale_speed);
-                        break;
-                }
+                _inputmanager.pressKey(event.key.keysym.sym);
                 break;
+            case SDL_KEYUP:
+                _inputmanager.releaseKey(event.key.keysym.sym);
         }
     }
+    
+    if (_inputmanager.isKeyPressed(SDLK_w))
+        _camera.setPosition(_camera.getPosition()+glm::vec2(0, cam_speed));
+
+    if (_inputmanager.isKeyPressed(SDLK_s))
+        _camera.setPosition(_camera.getPosition()+glm::vec2(0, -cam_speed));
+
+    if (_inputmanager.isKeyPressed(SDLK_a))
+        _camera.setPosition(_camera.getPosition()+glm::vec2(-cam_speed, 0));
+
+    if (_inputmanager.isKeyPressed(SDLK_d))
+        _camera.setPosition(_camera.getPosition()+glm::vec2(cam_speed, 0));
+
+    if (_inputmanager.isKeyPressed(SDLK_q))
+        _camera.setScale(_camera.getScale() + scale_speed);
+
+    if (_inputmanager.isKeyPressed(SDLK_e))
+        _camera.setScale(_camera.getScale() - scale_speed);
 }
 
 void MainGame::drawGame()
@@ -111,9 +115,7 @@ void MainGame::drawGame()
 
     _spritebatch.begin();
 
-    Engine::GLTexture texture = Engine::ResourceManager::getTexture("/home/parth/dev/opengl/Sandbox/res/textures/sprite.png");
-
-    int n = 20;
+    int n = 100;
 
     float width = _screenWidth/n;
     float height = _screenHeight/n;
@@ -127,7 +129,7 @@ void MainGame::drawGame()
             _spritebatch.draw(glm::vec4(x, y, width, height)
                              ,glm::vec4(0,0,4,1)
                              ,0
-                             ,texture.id
+                             ,_texture.id
                              ,{255,255,255,255});
         }
 
@@ -143,53 +145,26 @@ void MainGame::drawGame()
 void MainGame::gameLoop()
 {
     while (_gameState == GameState::PLAY) {
-        float startTicks = SDL_GetTicks();
+        _fpslimiter.begin();
 
         processInput();
         _camera.update();
         drawGame();
 
         _time += 0.01;
-        calculateFps();
+
+        //limit fps to _maxFps
+        _fpslimiter.end();
 
         //print fps every 50 frames
         static int frame_counter = 0;
         frame_counter ++;
+        _fps = _fpslimiter.getFPS();
         if (frame_counter % 50 == 0)
         {
             Engine::TRACE("FPS: {}", _fps);
             frame_counter = 0;
         }
-
-       //limit fps to _maxFps
-       float frameTicks = startTicks - SDL_GetTicks();
-       if (1000.0f / _maxFps > frameTicks)
-           SDL_Delay(1000.0f/_maxFps - frameTicks);
     }
 }
 
-void MainGame::calculateFps()
-{
-    static const int NUM_SAMPLES = 100;
-    static float frame_times[NUM_SAMPLES];
-    static float prev_tics = SDL_GetTicks();
-    static int curr_frame = 0;
-
-    float current_tics =  SDL_GetTicks();
-
-    _frameTime = current_tics - prev_tics;
-
-    frame_times[curr_frame % NUM_SAMPLES] = _frameTime;
-
-    int count = curr_frame < NUM_SAMPLES ? curr_frame : NUM_SAMPLES;
-    
-    float frame_time_avg = 0;
-    for (int i=0; i<count; i++)
-        frame_time_avg += frame_times[i];
-
-    frame_time_avg = count > 0 ? frame_time_avg/count : 0;
-    _fps = frame_time_avg > 0 ? 1000.0f/frame_time_avg : 0;
-
-    prev_tics = current_tics;
-    curr_frame++;
-}

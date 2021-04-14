@@ -11,6 +11,8 @@ set (opengl_src
     Engine.cpp
     Camera2D.cpp
     SpriteBatch.cpp
+    InputManager.cpp
+    Timing.cpp
 
     #header files MainGame.h Sprite.h
     GLSLProgram.h
@@ -24,6 +26,8 @@ set (opengl_src
     ResourceManager.h
     TextureCache.h
     SpriteBatch.h
+    InputManager.h
+    Timing.h
     )
 
 add_subdirectory(3rdparty)
