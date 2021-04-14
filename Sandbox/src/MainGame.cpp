@@ -49,8 +49,8 @@ void MainGame::initSystems()
     _camera.init(_screenWidth, _screenHeight);
     _window.createWindow("Sandbox", _screenWidth, _screenHeight, 0);
     initShaders();
-    glClearColor(1, 1, 1, 1.0);
-    _texture = Engine::ResourceManager::getTexture("/home/parth/dev/opengl/Sandbox/res/textures/sprite.png");
+    glClearColor(0, 0, 1, 1.0);
+    _texture = Engine::ResourceManager::getTexture("/home/parth/dev/opengl/Sandbox/res/textures/ethereum.png");
     _spritebatch.init();
     _fpslimiter.init(_maxFps);
 }
@@ -110,12 +110,9 @@ void MainGame::drawGame()
     GLint mat = _program.getUniformLocation("P");
     glUniformMatrix4fv(mat, 1, GL_FALSE, &(_camera.getCamMatrix()[0][0]));
 
-    GLint time = _program.getUniformLocation("time");
-    glUniform1f(time, _time);
-
     _spritebatch.begin();
 
-    int n = 100;
+    int n = 10;
 
     float width = _screenWidth/n;
     float height = _screenHeight/n;
@@ -127,7 +124,7 @@ void MainGame::drawGame()
             float y = (1                 - (float)(j+1)/(float)n) * (float)_screenHeight - (float)_screenHeight/2;
 
             _spritebatch.draw(glm::vec4(x, y, width, height)
-                             ,glm::vec4(0,0,4,1)
+                             ,glm::vec4(0,0,1,1)
                              ,0
                              ,_texture.id
                              ,{255,255,255,255});
@@ -150,8 +147,6 @@ void MainGame::gameLoop()
         processInput();
         _camera.update();
         drawGame();
-
-        _time += 0.01;
 
         //limit fps to _maxFps
         _fpslimiter.end();
