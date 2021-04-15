@@ -13,9 +13,8 @@ SpriteBatch::SpriteBatch()
 
 SpriteBatch::~SpriteBatch()
 {
-    for (Glyph *glyph : _glyphs)
-        delete(glyph);
     _glyphs.clear();
+    _glyphptrs.clear();
 }
 
 void SpriteBatch::init()
@@ -31,10 +30,15 @@ void SpriteBatch::begin(GlyphSortType sort_type)
 
     _render_batches.clear();
     _glyphs.clear();
+    _glyphptrs.clear();
 }
 
 void SpriteBatch::end()
 {
+    _glyphptrs.resize(_glyphs.size());
+    for(int i = 0; i<_glyphs.size(); i++)
+        _glyphptrs[i] = &_glyphs[i];
+
     sortGlyphs();
     createRenderBatches();
 }
@@ -58,28 +62,7 @@ void SpriteBatch::draw(glm::vec4 const &destRect,
                        GLuint const texture,
                        Color const &color)
 {
-    Glyph *newGlyph = new Glyph;
-    newGlyph->texture = texture;
-    newGlyph->depth = depth;
-
-    newGlyph->topright.color = color;
-    newGlyph->topleft.color = color;
-    newGlyph->bottomleft.color = color;
-    newGlyph->bottomright.color = color;
-
-    newGlyph->topright.setPosition   (destRect.x + destRect.z, destRect.y + destRect.w);
-    newGlyph->topright.setUV         (uvrect.x + uvrect.z    , uvrect.y + uvrect.w);
-
-    newGlyph->topleft.setPosition    (destRect.x             , destRect.y + destRect.w);
-    newGlyph->topleft.setUV          (uvrect.x               , uvrect.y + uvrect.w);
-
-    newGlyph->bottomleft.setPosition (destRect.x             , destRect.y);
-    newGlyph->bottomleft.setUV       (uvrect.x               , uvrect.y);
-
-    newGlyph->bottomright.setPosition(destRect.x + destRect.z, destRect.y);
-    newGlyph->bottomright.setUV      (uvrect.x + uvrect.z    , uvrect.y);
-
-    _glyphs.push_back(newGlyph);
+    _glyphs.emplace_back(destRect, uvrect, depth, texture, color);
 }
 
 void SpriteBatch::createVertexArray()
@@ -110,15 +93,15 @@ void SpriteBatch::sortGlyphs()
     switch (_sort_type) {
         case GlyphSortType::NONE:
         case GlyphSortType::TEXTURE:
-            std::stable_sort(_glyphs.begin(), _glyphs.end(),
+            std::stable_sort(_glyphptrs.begin(), _glyphptrs.end(),
                             [](Glyph*a, Glyph*b)->bool{return a->texture < b->texture;});
             break;
         case GlyphSortType::FRONT_TO_BACK:
-            std::stable_sort(_glyphs.begin(), _glyphs.end(),
+            std::stable_sort(_glyphptrs.begin(), _glyphptrs.end(),
                             [](Glyph*a, Glyph*b)->bool{return a->depth < b->depth;});
             break;
         case GlyphSortType::BACK_TO_FRONT:
-            std::stable_sort(_glyphs.begin(), _glyphs.end(),
+            std::stable_sort(_glyphptrs.begin(), _glyphptrs.end(),
                             [](Glyph*a, Glyph*b)->bool{return a->depth > b->depth;});
             break;
     }
@@ -130,34 +113,34 @@ void SpriteBatch::createRenderBatches()
         return;
 
     std::vector<Vertex> vertices;
-    vertices.resize(_glyphs.size() * 6);
+    vertices.resize(_glyphptrs.size() * 6);
     
     int curr_vert = 0;
     int offset = 0;
     
-    _render_batches.emplace_back(offset, _glyphs[0]->texture, 6);
-    vertices[curr_vert++] = _glyphs[0]->topright;
-    vertices[curr_vert++] = _glyphs[0]->topleft;
-    vertices[curr_vert++] = _glyphs[0]->bottomleft;
-    vertices[curr_vert++] = _glyphs[0]->bottomleft;
-    vertices[curr_vert++] = _glyphs[0]->bottomright;
-    vertices[curr_vert++] = _glyphs[0]->topright;
+    _render_batches.emplace_back(offset, _glyphptrs[0]->texture, 6);
+    vertices[curr_vert++] = _glyphptrs[0]->topright;
+    vertices[curr_vert++] = _glyphptrs[0]->topleft;
+    vertices[curr_vert++] = _glyphptrs[0]->bottomleft;
+    vertices[curr_vert++] = _glyphptrs[0]->bottomleft;
+    vertices[curr_vert++] = _glyphptrs[0]->bottomright;
+    vertices[curr_vert++] = _glyphptrs[0]->topright;
 
     offset += 6;
 
-    for (int curr_glyph = 1; curr_glyph < _glyphs.size(); curr_glyph++)
+    for (int curr_glyph = 1; curr_glyph < _glyphptrs.size(); curr_glyph++)
     {
-        if (_glyphs[curr_glyph]->texture != _glyphs[curr_glyph-1]->texture)
-            _render_batches.emplace_back(offset, _glyphs[curr_glyph]->texture, 6);
+        if (_glyphptrs[curr_glyph]->texture != _glyphptrs[curr_glyph-1]->texture)
+            _render_batches.emplace_back(offset, _glyphptrs[curr_glyph]->texture, 6);
         else
             _render_batches.back()._num_vertices += 6;
 
-        vertices[curr_vert++] = _glyphs[curr_glyph]->topright;
-        vertices[curr_vert++] = _glyphs[curr_glyph]->topleft;
-        vertices[curr_vert++] = _glyphs[curr_glyph]->bottomleft;
-        vertices[curr_vert++] = _glyphs[curr_glyph]->bottomleft;
-        vertices[curr_vert++] = _glyphs[curr_glyph]->bottomright;
-        vertices[curr_vert++] = _glyphs[curr_glyph]->topright;
+        vertices[curr_vert++] = _glyphptrs[curr_glyph]->topright;
+        vertices[curr_vert++] = _glyphptrs[curr_glyph]->topleft;
+        vertices[curr_vert++] = _glyphptrs[curr_glyph]->bottomleft;
+        vertices[curr_vert++] = _glyphptrs[curr_glyph]->bottomleft;
+        vertices[curr_vert++] = _glyphptrs[curr_glyph]->bottomright;
+        vertices[curr_vert++] = _glyphptrs[curr_glyph]->topright;
 
         offset += 6;
     }
@@ -172,11 +155,38 @@ void SpriteBatch::createRenderBatches()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-RenderBatch::RenderBatch(GLuint offset, GLuint texture, GLuint num_vertices)
+SpriteBatch::RenderBatch::RenderBatch(GLuint offset, GLuint texture, GLuint num_vertices)
     :_offset(offset)
     ,_texture(texture)
     ,_num_vertices(num_vertices)
 {
+}
+
+SpriteBatch::Glyph::Glyph(glm::vec4 const &destRect,
+                   glm::vec4 const &uvrect,
+                   float const a_depth,
+                   GLuint const a_texture,
+                   Color const &color)
+{
+    texture = a_texture;
+    depth = a_depth;
+
+    topright.color = color;
+    topleft.color = color;
+    bottomleft.color = color;
+    bottomright.color = color;
+
+    topright.setPosition   (destRect.x + destRect.z, destRect.y + destRect.w);
+    topright.setUV         (uvrect.x + uvrect.z    , uvrect.y + uvrect.w);
+
+    topleft.setPosition    (destRect.x             , destRect.y + destRect.w);
+    topleft.setUV          (uvrect.x               , uvrect.y + uvrect.w);
+
+    bottomleft.setPosition (destRect.x             , destRect.y);
+    bottomleft.setUV       (uvrect.x               , uvrect.y);
+
+    bottomright.setPosition(destRect.x + destRect.z, destRect.y);
+    bottomright.setUV      (uvrect.x + uvrect.z    , uvrect.y);
 }
 
 }

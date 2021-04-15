@@ -5,6 +5,7 @@
 #include "ImageLoader.h"
 #include "ResourceManager.h"
 #include "SDL_events.h"
+#include "SDL_mouse.h"
 #include "Sprite.h"
 #include "Window.h"
 #include "Camera2D.h"
@@ -49,9 +50,9 @@ void MainGame::initSystems()
     _camera.init(_screenWidth, _screenHeight);
     _window.createWindow("Sandbox", _screenWidth, _screenHeight, 0);
     initShaders();
-    glClearColor(1, 1, 1, 1.0);
+    glClearColor(52.0f/225.0f, 57/225.0f, 77/225.0f, 1.0);
     _texture = Engine::ResourceManager::getTexture("/home/parth/dev/opengl/Sandbox/res/textures/ethereum.png");
-    _texture2 = Engine::ResourceManager::getTexture("/home/parth/dev/opengl/Sandbox/res/textures/joker.png");
+    _texture2 = Engine::ResourceManager::getTexture("/home/parth/dev/opengl/Sandbox/res/textures/btc.png");
     _spritebatch.init();
     _fpslimiter.init(_maxFps);
 }
@@ -69,12 +70,20 @@ void MainGame::processInput()
                 _gameState = GameState::EXIT;
                 break;
             case SDL_MOUSEMOTION:
+                _inputmanager.setMouseCoords(event.motion.x, event.motion.y);
                 break;
             case SDL_KEYDOWN:
                 _inputmanager.pressKey(event.key.keysym.sym);
                 break;
             case SDL_KEYUP:
                 _inputmanager.releaseKey(event.key.keysym.sym);
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                _inputmanager.pressKey(event.button.button);
+                break;
+            case SDL_MOUSEBUTTONUP:
+                _inputmanager.releaseKey(event.button.button);
+                break;
         }
     }
     
@@ -95,6 +104,12 @@ void MainGame::processInput()
 
     if (_inputmanager.isKeyPressed(SDLK_e))
         _camera.setScale(_camera.getScale() - scale_speed);
+
+    if (_inputmanager.isKeyPressed(SDL_BUTTON_LEFT))
+    {
+        glm::vec2 pos = _camera.getScr2w(_inputmanager.getMouseCoords());
+        Engine::Log::TRACE("{}, {}", pos.x, pos.y);
+    }
 }
 
 void MainGame::drawGame()
@@ -121,7 +136,7 @@ void MainGame::drawGame()
     for(int i = 0; i<n; i++)
         for(int j = 0; j<n; j++)
         {
-            int tex = (i+j)%2 == 0 ? _texture.id : _texture2.id;
+            GLuint tex = ((i+j)%2 == 0) ? _texture.id : _texture2.id;
 
             float x = ((float)i/(float)n -                     1) * (float)_screenWidth + (float)_screenWidth/2;
             float y = (1                 - (float)(j+1)/(float)n) * (float)_screenHeight - (float)_screenHeight/2;
@@ -158,7 +173,7 @@ void MainGame::gameLoop()
         static int frame_counter = 0;
         frame_counter ++;
         _fps = _fpslimiter.getFPS();
-        if (frame_counter % 50 == 0)
+        if (frame_counter % 100 == 0)
         {
             Engine::TRACE("FPS: {}", _fps);
             frame_counter = 0;

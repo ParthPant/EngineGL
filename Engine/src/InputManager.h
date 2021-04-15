@@ -1,5 +1,6 @@
 #pragma once
 
+#include "glm/glm.hpp"
 #include <unordered_map>
 namespace Engine{
 
@@ -13,8 +14,12 @@ public:
 
     bool isKeyPressed(unsigned int const key_id);
 
+    void setMouseCoords(float x, float y);
+    glm::vec2 getMouseCoords() const {return _mousecoords;};
+
 private:
     std::unordered_map<unsigned int, bool> _keymap;
+    glm::vec2 _mousecoords;
 };
 
 }

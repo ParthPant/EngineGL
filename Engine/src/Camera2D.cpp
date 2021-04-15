@@ -32,4 +32,14 @@ void Camera2D::update()
     }
 }
 
+glm::vec2 Camera2D::getScr2w(glm::vec2 const & screen)
+{
+    glm::vec2 world = screen - glm::vec2(_screen_width/2, _screen_height/2);
+    world /= glm::vec2(_scale, _scale);
+    world += _position;
+    world.y *= -1;
+
+    return world;
+}
+
 }

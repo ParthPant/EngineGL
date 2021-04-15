@@ -7,34 +7,43 @@
 
 namespace Engine{
 
-struct Glyph{
-    GLuint texture;
-
-    float depth;
-
-    Vertex topleft;
-    Vertex topright;
-    Vertex bottomleft;
-    Vertex bottomright;
-};
-
-class RenderBatch{
-public:
-    GLuint _offset;
-    GLuint _texture;
-    GLuint _num_vertices;
-
-    RenderBatch(GLuint offset, GLuint texture, GLuint _num_vertices);
-};
-
 class SpriteBatch{
 private:
+
+    class Glyph{
+    public:
+        GLuint texture;
+
+        float depth;
+
+        Vertex topleft;
+        Vertex topright;
+        Vertex bottomleft;
+        Vertex bottomright;
+
+        Glyph(glm::vec4 const &destRect,
+              glm::vec4 const &uvrect,
+              float const a_depth,
+              GLuint const a_texture,
+              Color const &color);
+    };
+
+    class RenderBatch{
+    public:
+        GLuint _offset;
+        GLuint _texture;
+        GLuint _num_vertices;
+
+        RenderBatch(GLuint offset, GLuint texture, GLuint _num_vertices);
+    };
+
     void createVertexArray();
     
     GLuint _vbo;
     GLuint _vao;
 
-    std::vector<Glyph*> _glyphs;
+    std::vector<Glyph*> _glyphptrs;
+    std::vector<Glyph> _glyphs;
 
     enum class GlyphSortType{
         NONE,

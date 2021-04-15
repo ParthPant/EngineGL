@@ -23,6 +23,7 @@ public:
     float getScale() {return _scale;}
     glm::mat4 getCamMatrix() {return _camera_matrix;}
     void update();
+    glm::vec2 getScr2w(glm::vec2 const &screen);
 
 private:
     bool _needs_matrix_update;

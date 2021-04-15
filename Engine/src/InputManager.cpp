@@ -3,6 +3,7 @@
 namespace Engine{
 
 InputManager::InputManager()
+    :_mousecoords(0.0f)
 {
 }
 
@@ -28,6 +29,12 @@ bool InputManager::isKeyPressed(unsigned int const key_id)
         return _keymap[key_id];
 
     return false;
+}
+
+void InputManager::setMouseCoords(float x, float y)
+{
+    _mousecoords.x = x;
+    _mousecoords.y = y;
 }
 
 }
