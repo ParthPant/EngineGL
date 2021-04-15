@@ -4,8 +4,6 @@ set (opengl_src
     GLSLProgram.cpp
     Log.cpp
     IOManager.cpp
-    ImageLoader.cpp
-    ResourceManager.cpp
     TextureCache.cpp
     Window.cpp
     Engine.cpp
@@ -13,6 +11,7 @@ set (opengl_src
     SpriteBatch.cpp
     InputManager.cpp
     Timing.cpp
+    GLTexture.cpp
 
     #header files MainGame.h Sprite.h
     GLSLProgram.h
@@ -21,9 +20,7 @@ set (opengl_src
     Engine.h
     IOManager.h
     Log.h
-    ImageLoader.h
     GLTexture.h
-    ResourceManager.h
     TextureCache.h
     SpriteBatch.h
     InputManager.h

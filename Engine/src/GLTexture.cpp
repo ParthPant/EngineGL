@@ -1,19 +1,27 @@
-#include "ImageLoader.h"
 #include "GLTexture.h"
 #include "stb_image.h"
 #include "Log.h"
 
 namespace Engine{
 
-GLTexture ImageLoader::loadPng(std::string const &filepath)
+GLTexture::TextureCache GLTexture::_cache;
+
+GLTexture GLTexture::create(std::string const &filepath)
 {
+    GLTexture texture = {0, 0, 0};
+
+    if (_cache.getTexture(filepath, texture)) {
+        return texture;
+    }
+
     int width, height, i;
     stbi_set_flip_vertically_on_load(1);
     unsigned char *data = stbi_load(filepath.c_str(), &width, &height, &i, 4); 
     if (!data)
         ERROR("Failed to load image "+filepath);
 
-    GLTexture texture = {0, width, height};
+    texture.width = width;
+    texture.height = height;
 
     glGenTextures(1, &texture.id);
     glBindTexture(GL_TEXTURE_2D, texture.id);
@@ -27,8 +35,21 @@ GLTexture ImageLoader::loadPng(std::string const &filepath)
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
+    _cache.insert(filepath, texture);
+
     stbi_image_free(data);
+
     return texture;
+}
+
+void GLTexture::bind()
+{
+    glBindTexture(GL_TEXTURE_2D, id);
+}
+
+void GLTexture::unbind()
+{
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 }

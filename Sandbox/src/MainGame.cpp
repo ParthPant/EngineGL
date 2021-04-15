@@ -2,17 +2,13 @@
 
 #include "GLTexture.h"
 #include "MainGame.h"
-#include "ImageLoader.h"
 #include "ResourceManager.h"
-#include "SDL_events.h"
-#include "SDL_mouse.h"
 #include "Sprite.h"
 #include "Window.h"
 #include "Camera2D.h"
 #include "GLSLProgram.h"
 #include "Log.h"
 #include "Engine.h"
-#include "fwd.hpp"
 
 MainGame::MainGame()
     :_gameState(GameState::PLAY)
@@ -51,8 +47,8 @@ void MainGame::initSystems()
     _window.createWindow("Sandbox", _screenWidth, _screenHeight, 0);
     initShaders();
     glClearColor(52.0f/225.0f, 57/225.0f, 77/225.0f, 1.0);
-    _texture = Engine::ResourceManager::getTexture("/home/parth/dev/opengl/Sandbox/res/textures/ethereum.png");
-    _texture2 = Engine::ResourceManager::getTexture("/home/parth/dev/opengl/Sandbox/res/textures/btc.png");
+    _texture = Engine::GLTexture::create("/home/parth/dev/opengl/Sandbox/res/textures/ethereum.png");
+    _texture2 = Engine::GLTexture::create("/home/parth/dev/opengl/Sandbox/res/textures/btc.png");
     _spritebatch.init();
     _fpslimiter.init(_maxFps);
 }
