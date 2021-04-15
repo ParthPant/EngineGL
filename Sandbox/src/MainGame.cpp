@@ -2,7 +2,6 @@
 
 #include "GLTexture.h"
 #include "MainGame.h"
-#include "ResourceManager.h"
 #include "Sprite.h"
 #include "Window.h"
 #include "Camera2D.h"
