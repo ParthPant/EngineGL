@@ -1,7 +1,5 @@
 set(game_SRC
-    main.cpp
     MainGame.cpp
-
     MainGame.h
     )
 

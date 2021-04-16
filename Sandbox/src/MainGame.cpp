@@ -7,7 +7,6 @@
 #include "Camera2D.h"
 #include "GLSLProgram.h"
 #include "Log.h"
-#include "Engine.h"
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl.h"
@@ -187,5 +186,10 @@ void MainGame::gameLoop()
             frame_counter = 0;
         }
     }
+}
+
+Engine::Application* Engine::CreateApplication()
+{
+    return new MainGame;
 }
 

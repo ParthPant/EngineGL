@@ -8,6 +8,7 @@
 #include "InputManager.h"
 #include "SpriteBatch.h"
 #include "Timing.h"
+#include "Engine.h"
 
 #include <vector>
 
@@ -16,12 +17,12 @@ enum class GameState{
     EXIT
 };
 
-class MainGame{
+class MainGame : public Engine::Application{
 public:
     MainGame();
     ~MainGame();
 
-    void run();
+    void run() override;
 
 private:
     void initSystems();
