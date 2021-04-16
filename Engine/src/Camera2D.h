@@ -18,11 +18,15 @@ public:
         _ortho_matrix = glm::ortho(0.0f, (float)_screen_width, 0.0f, (float)_screen_height); 
     }
     void setPosition(glm::vec2 const &pos) {_position = pos; _needs_matrix_update = true;}
-    glm::vec2 getPosition() {return _position;}
     void setScale(float scale) {_scale = scale; _needs_matrix_update = true;}
+
+    glm::vec2 getPosition() {return _position;}
     float getScale() {return _scale;}
+
     glm::mat4 getCamMatrix() {return _camera_matrix;}
+
     void update();
+
     glm::vec2 getScr2w(glm::vec2 const &screen);
 
 private:

@@ -48,4 +48,6 @@ private:
     float _fps;
     float _frameTime;
     float _maxFps;
+
+    int n = 5;
 };

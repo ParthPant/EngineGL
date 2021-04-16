@@ -52,4 +52,9 @@ void GLTexture::unbind()
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void GLTexture::unbind_all()
+{
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 }

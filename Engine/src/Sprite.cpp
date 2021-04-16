@@ -1,5 +1,5 @@
 #include "Sprite.h"
-#include "ResourceManager.h"
+#include "GLTexture.h"
 #include <cstddef>
 
 namespace Engine{
@@ -76,7 +76,7 @@ void Sprite::init(float x, float y, float width, float height, std::string const
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     if (!texture_path.empty())
-        _texture = ResourceManager::getTexture(texture_path);
+        _texture = GLTexture::create(texture_path);
 }
 
 }

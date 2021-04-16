@@ -4,7 +4,6 @@ set (opengl_src
     GLSLProgram.cpp
     Log.cpp
     IOManager.cpp
-    TextureCache.cpp
     Window.cpp
     Engine.cpp
     Camera2D.cpp
@@ -21,7 +20,6 @@ set (opengl_src
     IOManager.h #not using this anywhere
     Log.h
     GLTexture.h
-    TextureCache.h
     SpriteBatch.h
     InputManager.h
     Timing.h
@@ -34,6 +32,8 @@ find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 include_directories(3rdparty/glad/include)
 include_directories(3rdparty/spdlog/include)
+include_directories(3rdparty/imgui)
+include_directories(3rdparty/imgui/backends)
 include_directories(3rdparty/stb_image)
 include_directories(3rdparty/glm/glm)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -41,4 +41,4 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 add_library(${PROJECT_NAME} ${opengl_src})
 
 target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} glad ${CMAKE_DL_LIBS} spdlog stb_image glm)
+target_link_libraries(${PROJECT_NAME} glad ${CMAKE_DL_LIBS} spdlog stb_image glm imgui)

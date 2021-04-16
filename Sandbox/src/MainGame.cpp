@@ -8,6 +8,9 @@
 #include "GLSLProgram.h"
 #include "Log.h"
 #include "Engine.h"
+#include "imgui.h"
+#include "imgui_impl_opengl3.h"
+#include "imgui_impl_sdl.h"
 
 MainGame::MainGame()
     :_gameState(GameState::PLAY)
@@ -112,6 +115,10 @@ void MainGame::drawGame()
     glClearDepth(1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplSDL2_NewFrame(static_cast<SDL_Window*>(_window.getWindow()));
+    ImGui::NewFrame();
+
     _program.bind();
 
     glActiveTexture(GL_TEXTURE0);
@@ -123,7 +130,10 @@ void MainGame::drawGame()
 
     _spritebatch.begin();
 
-    int n = 10;
+
+    {
+        ImGui::SliderInt("Grid Size", &n, 5, 100);
+    }
 
     float width = _screenWidth/n;
     float height = _screenHeight/n;
@@ -144,11 +154,14 @@ void MainGame::drawGame()
         }
 
     _spritebatch.end();
+
+    ImGui::Render();
     _spritebatch.renderBatch();
 
-    glBindTexture(GL_TEXTURE_2D, 0);
+    Engine::GLTexture::unbind_all();
     _program.unbind();
     
+     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     _window.swapBuffers();
 }
 

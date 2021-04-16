@@ -29,6 +29,7 @@ public:
 
     static GLTexture create(std::string const & filepath);
     static GLTexture create(int width, int height, std::string const & name);
+    static void unbind_all();
 
     void bind();
     void unbind();
