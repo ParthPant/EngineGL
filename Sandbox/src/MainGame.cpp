@@ -48,8 +48,7 @@ void MainGame::initSystems()
     _window.createWindow("Sandbox", _screenWidth, _screenHeight, 0);
     initShaders();
     glClearColor(52.0f/225.0f, 57/225.0f, 77/225.0f, 1.0);
-    _texture = Engine::GLTexture::create("/home/parth/dev/opengl/Sandbox/res/textures/ethereum.png");
-    _texture2 = Engine::GLTexture::create("/home/parth/dev/opengl/Sandbox/res/textures/btc.png");
+    _texture = Engine::GLTexture::create(1, 1, "white");
     _spritebatch.init();
     _fpslimiter.init(_maxFps);
 }
@@ -131,7 +130,14 @@ void MainGame::drawGame()
 
 
     {
+        static int framecount = 0;
+        if (framecount % 50 == 0)
+        {
+            _fps = ImGui::GetIO().Framerate;
+        }
+        framecount++;
         ImGui::SliderInt("Grid Size", &n, 5, 100);
+        ImGui::Text("Frame rate: %.1f", _fps);
     }
 
     float width = _screenWidth/n;
@@ -140,7 +146,7 @@ void MainGame::drawGame()
     for(int i = 0; i<n; i++)
         for(int j = 0; j<n; j++)
         {
-            GLuint tex = ((i+j)%2 == 0) ? _texture.id : _texture2.id;
+            Engine::Color color = ((i+j)%2 == 0) ? Engine::Color{110, 145, 219, 255} : Engine::Color{61, 82, 128, 255};
 
             float x = ((float)i/(float)n -                     1) * (float)_screenWidth + (float)_screenWidth/2;
             float y = (1                 - (float)(j+1)/(float)n) * (float)_screenHeight - (float)_screenHeight/2;
@@ -148,8 +154,8 @@ void MainGame::drawGame()
             _spritebatch.draw(glm::vec4(x, y, width, height)
                              ,glm::vec4(0,0,1,1)
                              ,0
-                             ,tex
-                             ,{255,255,255,255});
+                             ,_texture.id
+                             ,color);
         }
 
     _spritebatch.end();
@@ -175,16 +181,6 @@ void MainGame::gameLoop()
 
         //limit fps to _maxFps
         _fpslimiter.end();
-
-        //print fps every 50 frames
-        static int frame_counter = 0;
-        frame_counter ++;
-        _fps = _fpslimiter.getFPS();
-        if (frame_counter % 100 == 0)
-        {
-            Engine::TRACE("FPS: {}", _fps);
-            frame_counter = 0;
-        }
     }
 }
 
