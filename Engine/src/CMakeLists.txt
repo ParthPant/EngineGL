@@ -28,7 +28,9 @@ set (opengl_src
     Entrypoint.h
     )
 
+
 add_subdirectory(3rdparty)
+add_subdirectory(Events)
 
 find_package(SDL2 REQUIRED)
 
@@ -41,7 +43,14 @@ include_directories(3rdparty/stb_image)
 include_directories(3rdparty/glm/glm)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-add_library(${PROJECT_NAME} ${opengl_src})
+get_property(global_SRC GLOBAL PROPERTY global_SRC) 
+set(global_SRC
+    ${opengl_src}
+    ${global_SRC}
+    )
+
+add_library(${PROJECT_NAME} ${global_SRC})
+add_compile_options(-extra-arg-before=-xc++)
 
 target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} glad ${CMAKE_DL_LIBS} spdlog stb_image glm imgui)

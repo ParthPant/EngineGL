@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Window.h"
+
 namespace Engine{
 
 class Application{
@@ -8,7 +10,9 @@ public:
     virtual ~Application();
 
     virtual void run();
-private:
+    void onEvent(Event &e);
+protected:
+    Window _window;
 };
 
 Application* CreateApplication();

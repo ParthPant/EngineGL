@@ -32,7 +32,6 @@ private:
     void drawGame();
     void calculateFps();
 
-    Engine::Window _window;
     int _screenWidth = 1024;
     int _screenHeight = 768;
 

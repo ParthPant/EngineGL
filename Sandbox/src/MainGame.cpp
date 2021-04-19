@@ -2,6 +2,7 @@
 
 #include "GLTexture.h"
 #include "MainGame.h"
+#include "SDL_events.h"
 #include "Sprite.h"
 #include "Window.h"
 #include "Camera2D.h"
@@ -45,7 +46,7 @@ void MainGame::initSystems()
     Engine::Log::init();
     Engine::init();
     _camera.init(_screenWidth, _screenHeight);
-    _window.createWindow("Sandbox", _screenWidth, _screenHeight, 0);
+    _window.createWindow("Sandbox", 500, 500, 0);
     initShaders();
     glClearColor(52.0f/225.0f, 57/225.0f, 77/225.0f, 1.0);
     _texture = Engine::GLTexture::create(1, 1, "white");
@@ -62,9 +63,6 @@ void MainGame::processInput()
 
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
-            case SDL_QUIT:
-                _gameState = GameState::EXIT;
-                break;
             case SDL_MOUSEMOTION:
                 _inputmanager.setMouseCoords(event.motion.x, event.motion.y);
                 break;

@@ -3,6 +3,10 @@
 #include "glm/glm.hpp"
 #include "Application.h"
 #include "Entrypoint.h"
+#include "Log.h"
+#include "Events/KeyEvent.hpp"
+#include "Events/Events.hpp"
+#include <functional>
 
 namespace Engine{
 

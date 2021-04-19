@@ -1,17 +1,24 @@
 #include "Window.h"
 #include "SDL.h"
+#include "SDL_events.h"
+#include "SDL_keycode.h"
+#include "SDL_stdinc.h"
 #include "SDL_video.h"
 #include "glad/glad.h"
 #include "Log.h"
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
+#include "Events/Events.hpp"
+#include "Events/KeyEvent.hpp"
+#include "Events/MouseEvent.hpp"
+#include "Events/ApplicationEvent.hpp"
+#include <functional>
 
 namespace Engine{
 
 Window::Window()
-    :_width(0)
-    ,_height(0)
+    :_data({0, 0})
     ,_window(nullptr)
 {
 }
@@ -20,10 +27,52 @@ Window::~Window()
 {
 }
 
+int Window::event_filter(void* data, SDL_Event* e)
+{
+    auto window = static_cast<Window*>(data);
+    switch (e->type)
+    {
+        case SDL_QUIT:{
+              WindowCloseEvent close_ev;
+              window->_data._callback(close_ev);
+              break;
+              }
+
+        case SDL_MOUSEBUTTONDOWN:{
+              MouseButtonPressedEvent pressed_ev(static_cast<MouseCode>(e->button.button));
+              window->_data._callback(pressed_ev);
+              break;
+              }
+
+        case SDL_MOUSEBUTTONUP:{
+              MouseButtonReleasedEvent released_ev(static_cast<MouseCode>(e->button.button));
+              window->_data._callback(released_ev);
+              break;
+              }
+
+        case SDL_KEYDOWN:{
+              KeyPressedEvent keypressed_ev(static_cast<KeyCode>(e->key.keysym.sym),e->key.repeat);
+              window->_data._callback(keypressed_ev); 
+              break;
+              }
+
+        case SDL_WINDOWEVENT:{
+              switch (e->window.event){
+                  case SDL_WINDOWEVENT_RESIZED:
+                      WindowResizeEvent resize_ev(e->window.data1, e->window.data2);
+                      window->_data._callback(resize_ev);
+                      break;
+              }
+              }
+    }
+
+    return 1;
+}
+
 int Window::createWindow(std::string const &name, int width, int height, unsigned int curr_flags)
 {
-    _width = width;
-    _height = height;
+    _data._width = width;
+    _data._height = height;
 
     Uint32 flags = SDL_WINDOW_OPENGL;
     
@@ -40,6 +89,8 @@ int Window::createWindow(std::string const &name, int width, int height, unsigne
                                width,
                                height,
                                flags);
+
+    SDL_SetWindowResizable(_window, SDL_TRUE);
 
     if (!_window) {
         ERROR("SDL failed to create a window");
@@ -79,6 +130,8 @@ int Window::createWindow(std::string const &name, int width, int height, unsigne
     // Setup Platform/Renderer backends
     ImGui_ImplSDL2_InitForOpenGL(_window, glContext);
     ImGui_ImplOpenGL3_Init("#version 330");
+
+    SDL_AddEventWatch(event_filter, this);
 
     return 1;
 }
