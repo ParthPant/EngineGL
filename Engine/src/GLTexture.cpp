@@ -24,6 +24,7 @@ GLTexture GLTexture::create(std::string const &filepath)
     texture.height = height;
 
     glGenTextures(1, &texture.id);
+    //glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture.id);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (void*)data);
     glGenerateMipmap(GL_TEXTURE_2D);

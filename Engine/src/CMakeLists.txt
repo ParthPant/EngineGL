@@ -12,8 +12,10 @@ set (opengl_src
     Timing.cpp
     GLTexture.cpp
     Application.cpp
+    Layers.cpp
 
     #header files MainGame.h Sprite.h
+    Layers.h
     GLSLProgram.h
     Camera2D.h
     Window.h

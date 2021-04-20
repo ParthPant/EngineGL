@@ -1,11 +1,11 @@
 #include "Window.h"
+#include "Log.h"
 #include "SDL.h"
 #include "SDL_events.h"
 #include "SDL_keycode.h"
 #include "SDL_stdinc.h"
 #include "SDL_video.h"
 #include "glad/glad.h"
-#include "Log.h"
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
@@ -13,6 +13,7 @@
 #include "Events/KeyEvent.hpp"
 #include "Events/MouseEvent.hpp"
 #include "Events/ApplicationEvent.hpp"
+
 #include <functional>
 
 namespace Engine{
@@ -69,8 +70,18 @@ int Window::event_filter(void* data, SDL_Event* e)
     return 1;
 }
 
+void Window::onUpdate()
+{
+    SDL_Event e;
+    SDL_PollEvent(&e);
+    swapBuffers();
+}
+
 int Window::createWindow(std::string const &name, int width, int height, unsigned int curr_flags)
 {
+    SDL_Init(SDL_INIT_EVERYTHING);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
     _data._width = width;
     _data._height = height;
 
@@ -83,7 +94,7 @@ int Window::createWindow(std::string const &name, int width, int height, unsigne
     if (curr_flags & BORDERLESS)
         flags |= SDL_WINDOW_BORDERLESS;
 
-    _window = SDL_CreateWindow("Game",
+    _window = SDL_CreateWindow(name.c_str(),
                                SDL_WINDOWPOS_CENTERED,
                                SDL_WINDOWPOS_CENTERED,
                                width,
@@ -119,13 +130,11 @@ int Window::createWindow(std::string const &name, int width, int height, unsigne
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    ImGuiIO& io = ImGui::GetIO();
+    (void)io;
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
 
     // Setup Platform/Renderer backends
     ImGui_ImplSDL2_InitForOpenGL(_window, glContext);

@@ -1,6 +1,9 @@
 set(game_SRC
     MainGame.cpp
     MainGame.h
+
+    ExampleLayer.cpp
+    ExampleLayer.h
     )
 
 find_package(SDL2 REQUIRED)

@@ -21,6 +21,8 @@ public:
 
     using EventCallbackFn = std::function<void(Event &ev)>;
 
+    void onUpdate();
+
     int createWindow(std::string const &name, int width, int height, unsigned int flags);
 
     int getScreenWidth() { return _data._width; }
