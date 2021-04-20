@@ -9,12 +9,19 @@ namespace Engine{
 class Layer{
 public:
     Layer(std::string const &name);
+
+    Layer()
+        :_name("Layer")
+    {
+    };
+
     ~Layer();
 
     virtual void onEvent(Event &e);
     virtual void onUpdate();
     virtual void onAttach();
     virtual void onDetach();
+    virtual void onImGuiRender();
 
     std::string getName(){return _name;}
 
@@ -47,7 +54,7 @@ public:
 
 private:
     std::vector<Layer*> _layerstack;
-    std::vector<Layer*>::iterator _inserter;
+    unsigned int _insertindex;
 };
 
 }

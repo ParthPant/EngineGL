@@ -13,6 +13,7 @@ set (opengl_src
     GLTexture.cpp
     Application.cpp
     Layers.cpp
+    ImGuiLayer.cpp
 
     #header files MainGame.h Sprite.h
     Layers.h
@@ -28,6 +29,7 @@ set (opengl_src
     Timing.h
     Application.h
     Entrypoint.h
+    ImGuiLayer.h
     )
 
 

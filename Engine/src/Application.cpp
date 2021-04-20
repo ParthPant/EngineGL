@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "ImGuiLayer.h"
 #include "Events/Events.hpp"
 #include "Events/KeyEvent.hpp"
 #include "Events/MouseEvent.hpp"
@@ -25,6 +26,9 @@ Application::Application(std::string const & name)
     _window->setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
     _window->createWindow(_name, 1280, 1024, 0);
     glClearColor(52.0f/225.0f, 57/225.0f, 77/225.0f, 1.0);
+
+    _imGuiLayer = new ImGuiLayer();
+    pushOverlay(_imGuiLayer);
 }
 
 void Application::run()
@@ -35,9 +39,14 @@ void Application::run()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         for (auto *layer : _layers)
-        {
             layer->onUpdate();
-        }
+
+        _imGuiLayer->imGuiBegin();
+
+        for(auto *layer : _layers)
+            _imGuiLayer->onImGuiRender();
+
+        _imGuiLayer->imGuiEnd();
 
         _window->onUpdate();
     }

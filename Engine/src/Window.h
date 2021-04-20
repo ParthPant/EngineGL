@@ -28,7 +28,8 @@ public:
     int getScreenWidth() { return _data._width; }
     int getScreenHeight() { return _data._height;}
 
-    SDL_Window *getWindow(){ return _window; }
+    SDL_Window *getWindow() { return _window; }
+    SDL_GLContext getContext() { return _glContext; }
 
     void swapBuffers();
 
@@ -36,6 +37,8 @@ public:
     static int event_filter(void* data, SDL_Event* e);
 private:
     SDL_Window *_window;
+    SDL_GLContext _glContext;
+
     int windowEvents();
 
 

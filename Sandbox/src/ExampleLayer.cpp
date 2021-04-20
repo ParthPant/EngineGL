@@ -54,4 +54,5 @@ void ExampleLayer::onDetach()
 
 void ExampleLayer::onEvent(Engine::Event &e)
 {
+    Engine::TRACE(e.toString());
 }

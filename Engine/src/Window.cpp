@@ -108,9 +108,9 @@ int Window::createWindow(std::string const &name, int width, int height, unsigne
         return -1;
     }
 
-    SDL_GLContext glContext = SDL_GL_CreateContext(_window);
+    _glContext = SDL_GL_CreateContext(_window);
 
-    if (!glContext) {
+    if (!_glContext) {
         ERROR("GLContext could not be created");
         return -1;
     }
@@ -132,13 +132,6 @@ int Window::createWindow(std::string const &name, int width, int height, unsigne
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     (void)io;
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-
-    // Setup Platform/Renderer backends
-    ImGui_ImplSDL2_InitForOpenGL(_window, glContext);
-    ImGui_ImplOpenGL3_Init("#version 330");
 
     SDL_AddEventWatch(event_filter, this);
 

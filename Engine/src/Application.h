@@ -2,6 +2,7 @@
 
 #include "Layers.h"
 #include "Window.h"
+#include "ImGuiLayer.h"
 
 namespace Engine{
 
@@ -33,6 +34,7 @@ protected:
     static Application *_app;
     std::string _name;
 
+    ImGuiLayer* _imGuiLayer;
     LayerStack _layers;
     bool _running;
 };

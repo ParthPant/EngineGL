@@ -1,4 +1,5 @@
 #include "Layers.h"
+#include "Log.h"
 #include <algorithm>
 
 namespace Engine{
@@ -28,8 +29,12 @@ void Layer::onDetach()
 {
 }
 
+void Layer::onImGuiRender()
+{
+}
+
 LayerStack::LayerStack()
-    :_inserter(_layerstack.begin())
+    :_insertindex(0)
 {
 }
 
@@ -43,7 +48,8 @@ LayerStack::~LayerStack()
 
 void LayerStack::push(Layer *l)
 {
-    _layerstack.emplace(_inserter, l);
+    _layerstack.emplace(_layerstack.begin()+_insertindex, l);
+    _insertindex++;
 }
 
 void LayerStack::pop(Layer *l)
@@ -53,7 +59,7 @@ void LayerStack::pop(Layer *l)
     {
         _layerstack.erase(it);
         l->onDetach();
-        _inserter--;
+        _insertindex--;
     }
 }
 
