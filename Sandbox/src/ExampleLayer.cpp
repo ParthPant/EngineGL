@@ -1,8 +1,13 @@
 #include "ExampleLayer.h"
 #include "Application.h"
 #include "Engine.h"
+#include "Events/Events.hpp"
+#include "Events/KeyEvent.hpp"
 #include "GLTexture.h"
 #include "Log.h"
+#include "SDL_keycode.h"
+#include "imgui.h"
+#include <memory>
 
 void ExampleLayer::onAttach()
 {
@@ -38,7 +43,7 @@ void ExampleLayer::onUpdate()
 
     _spriteBatch.begin();
     
-    _spriteBatch.draw(glm::vec4(0, 0, 500, 500), glm::vec4(0, 0, 1, 1), 0, _texture.id, {255, 255, 255, 255});
+    _spriteBatch.draw(glm::vec4(_positionx, 0, 500, 500), glm::vec4(0, 0, 1, 1), 0, _texture.id, {255, 255, 255, 255});
 
     _spriteBatch.end();
 
@@ -54,5 +59,9 @@ void ExampleLayer::onDetach()
 
 void ExampleLayer::onEvent(Engine::Event &e)
 {
-    Engine::TRACE(e.toString());
+}
+
+void ExampleLayer::onImGuiRender()
+{
+    ImGui::SliderFloat("X position", &_positionx, 0, 500);
 }

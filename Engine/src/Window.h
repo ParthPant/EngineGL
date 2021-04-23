@@ -21,7 +21,7 @@ public:
 
     using EventCallbackFn = std::function<void(Event &ev)>;
 
-    void onUpdate();
+    void processInput();
 
     int createWindow(std::string const &name, int width, int height, unsigned int flags);
 

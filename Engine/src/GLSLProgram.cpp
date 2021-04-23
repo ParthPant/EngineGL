@@ -66,7 +66,6 @@ void GLSLProgram::compileShaders(std::string const &vertexShaderFile,
 
 void GLSLProgram::compile(std::string const &filename,  GLuint id)
 {
-
     std::ifstream vertFile(filename);
     if (vertFile.fail())
         ERROR("Failed to open" + filename);

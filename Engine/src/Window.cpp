@@ -39,6 +39,12 @@ int Window::event_filter(void* data, SDL_Event* e)
               break;
               }
 
+        case SDL_MOUSEWHEEL:{
+              MouseScrolledEvent mousescrolled_ev(e->wheel.x, e->wheel.y);
+              window->_data._callback(mousescrolled_ev);
+              break;
+              }
+
         case SDL_MOUSEBUTTONDOWN:{
               MouseButtonPressedEvent pressed_ev(static_cast<MouseCode>(e->button.button));
               window->_data._callback(pressed_ev);
@@ -70,11 +76,11 @@ int Window::event_filter(void* data, SDL_Event* e)
     return 1;
 }
 
-void Window::onUpdate()
+void Window::processInput()
 {
     SDL_Event e;
     SDL_PollEvent(&e);
-    swapBuffers();
+    ImGui_ImplSDL2_ProcessEvent(&e);
 }
 
 int Window::createWindow(std::string const &name, int width, int height, unsigned int curr_flags)
@@ -119,8 +125,6 @@ int Window::createWindow(std::string const &name, int width, int height, unsigne
         return -1;
     }
 
-
-    INFO("OpenGL version: {}", glGetString(GL_VERSION));
     
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

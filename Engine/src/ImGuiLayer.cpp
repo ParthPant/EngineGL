@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl.h"
+#include "glad/glad.h"
 #include "Application.h"
 
 namespace Engine{
@@ -33,8 +34,12 @@ void ImGuiLayer::onDetach()
 
 void ImGuiLayer::onImGuiRender()
 {
-    bool show_demo = true;
-    ImGui::ShowDemoWindow(&show_demo);
+    ImGui::Begin("OpenGL");
+    ImGui::Text("OpenGL Version: %s\nRenderer Version: %s\nVendor: %s",
+                glGetString(GL_VERSION)
+               ,glGetString(GL_RENDERER)
+               ,glGetString(GL_VENDOR));
+    ImGui::End();
 }
 
 void ImGuiLayer::imGuiBegin()
@@ -46,6 +51,10 @@ void ImGuiLayer::imGuiBegin()
 
 void ImGuiLayer::imGuiEnd()
 {
+    ImGuiIO& io = ImGui::GetIO();
+    Application* app = Application::getApplication();
+    io.DisplaySize = ImVec2((float)app->getWindow()->getScreenWidth(), (float)app->getWindow()->getScreenHeight());
+
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

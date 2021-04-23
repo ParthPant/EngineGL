@@ -27,11 +27,14 @@ public:
     void onDetach() override;
     void onUpdate() override;
     void onEvent(Engine::Event& e) override;
+    void onImGuiRender() override;
 
 private:
     Engine::GLSLProgram _program;
     Engine::SpriteBatch _spriteBatch;
     Engine::GLTexture _texture;
     Engine::Camera2D _camera;
+
+    float _positionx = 0;
 };
 

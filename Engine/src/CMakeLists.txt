@@ -35,6 +35,7 @@ set (opengl_src
 
 add_subdirectory(3rdparty)
 add_subdirectory(Events)
+add_subdirectory(Renderer)
 
 find_package(SDL2 REQUIRED)
 

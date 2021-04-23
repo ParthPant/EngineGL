@@ -1,8 +1,14 @@
 #pragma once
 
+#include "GLSLProgram.h"
 #include "Layers.h"
+#include "Renderer/ElementBuffer.h"
+#include "Renderer/VertexArray.h"
+#include "Renderer/VertexBuffer.h"
+#include "Renderer/VertexLayout.h"
 #include "Window.h"
 #include "ImGuiLayer.h"
+#include <memory>
 
 namespace Engine{
 
@@ -37,6 +43,13 @@ protected:
     ImGuiLayer* _imGuiLayer;
     LayerStack _layers;
     bool _running;
+
+    VertexBuffer* _vbo;
+    VertexLayout* _layout;
+    ElementBuffer* _ibo;
+    VertexArray* _vao;
+
+    GLSLProgram _program;
 };
 
 Application* CreateApplication();
