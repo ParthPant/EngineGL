@@ -11,23 +11,24 @@ namespace Engine{
 class VertexArray{
 public:
     ~VertexArray();
+    VertexArray();
 
-    void addVertexBuffer(VertexBuffer* vb);
-    void addElementBuffer(ElementBuffer* eb);
+    void addVertexBuffer(std::shared_ptr<VertexBuffer>& vb);
+    void addElementBuffer(std::shared_ptr<ElementBuffer>& eb);
 
     void bind();
     void unbind();
 
     uint32_t getId() {return _id;}
+    std::shared_ptr<ElementBuffer> getElementBuffer() {return _eb;}
 
-    static VertexArray* create();
+    static std::shared_ptr<VertexArray> create();
 private:
-    VertexArray();
     uint32_t _id; 
 
-    VertexBuffer* _vb;
-    VertexLayout* _layout;
-    ElementBuffer* _eb;
+    std::shared_ptr<VertexBuffer> _vb;
+    std::shared_ptr<VertexLayout> _layout;
+    std::shared_ptr<ElementBuffer> _eb;
 };
 
 }

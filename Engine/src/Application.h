@@ -30,24 +30,24 @@ public:
         l->onAttach();
     }
 
-    Window* getWindow() {return _window;}
+    Window* getWindow() const {return _window.get();}
+    static Application* getApplication() { return _app.get(); }
 
-    static Application* getApplication(){ return _app; }
 protected:
     Application(std::string const & name);
 
-    Window* _window;
-    static Application *_app;
+    std::unique_ptr<Window> _window;
+    static std::unique_ptr<Application> _app;
     std::string _name;
 
     ImGuiLayer* _imGuiLayer;
     LayerStack _layers;
     bool _running;
 
-    VertexBuffer* _vbo;
-    VertexLayout* _layout;
-    ElementBuffer* _ibo;
-    VertexArray* _vao;
+    std::shared_ptr<VertexBuffer> _vbo;
+    std::shared_ptr<VertexLayout> _layout;
+    std::shared_ptr<ElementBuffer> _ibo;
+    std::shared_ptr<VertexArray> _vao;
 
     GLSLProgram _program;
 };

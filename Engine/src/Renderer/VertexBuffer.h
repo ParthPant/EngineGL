@@ -3,27 +3,27 @@
 #include "VertexLayout.h"
 #include "glad/glad.h"
 
+#include <memory>
+
 namespace Engine{
 
 
 class VertexBuffer{
 public:
     ~VertexBuffer();
+    VertexBuffer();
 
     void bind();
     void unbind();
     void setData(float *vertices, int size);
-    void setLayout(VertexLayout *layout) {_layout = layout;}
-    VertexLayout* getLayout() {return _layout;}
+    void setLayout(std::shared_ptr<VertexLayout>& layout) {_layout = layout;}
+    std::shared_ptr<VertexLayout> getLayout() {return _layout;}
 
     int getId() {return _vbo;}
-    static VertexBuffer* create();
+    static std::shared_ptr<VertexBuffer> create();
 
 private:
-
-    VertexBuffer();
-
-    VertexLayout *_layout;
+    std::shared_ptr<VertexLayout> _layout;
     GLuint _vbo;
 };
 

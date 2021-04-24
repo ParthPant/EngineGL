@@ -1,5 +1,6 @@
 #include "ElementBuffer.h"
 #include "glad/glad.h"
+#include <memory>
 
 namespace Engine{
 
@@ -12,9 +13,9 @@ ElementBuffer::~ElementBuffer()
     glDeleteBuffers(1, &_id);
 }
 
-ElementBuffer* ElementBuffer::create()
+std::shared_ptr<ElementBuffer> ElementBuffer::create()
 {
-    ElementBuffer* eb = new ElementBuffer();
+    std::shared_ptr<ElementBuffer> eb = std::make_shared<ElementBuffer>();
     glGenBuffers(1, &(eb->_id));
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eb->_id);
     return eb;

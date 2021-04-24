@@ -1,5 +1,6 @@
 #include "VertexArray.h"
 #include "Log.h"
+#include <memory>
 
 namespace Engine{
 
@@ -21,22 +22,22 @@ void VertexArray::unbind()
     glBindVertexArray(0);
 }
 
-VertexArray* VertexArray::create()
+std::shared_ptr<VertexArray> VertexArray::create()
 {
-    VertexArray* va = new VertexArray();
+    std::shared_ptr<VertexArray> va = std::make_shared<VertexArray>();
     glGenVertexArrays(1, &(va->_id)); 
     glBindVertexArray(va->_id);
     
     return va;
 }
 
-void VertexArray::addVertexBuffer(VertexBuffer* vb)
+void VertexArray::addVertexBuffer(std::shared_ptr<VertexBuffer>& vb)
 {
     glBindVertexArray(_id);
     vb->bind();
     _vb = vb;
 
-    VertexLayout* layout = vb->getLayout();
+    std::shared_ptr<VertexLayout> layout = vb->getLayout();
     int i=0;
     for(auto element : *layout)
     {
@@ -53,7 +54,7 @@ void VertexArray::addVertexBuffer(VertexBuffer* vb)
     glBindVertexArray(0);
 }
 
-void VertexArray::addElementBuffer(ElementBuffer* eb)
+void VertexArray::addElementBuffer(std::shared_ptr<ElementBuffer>& eb)
 {
     glBindVertexArray(_id);
     eb->bind();

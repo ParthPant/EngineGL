@@ -1,14 +1,16 @@
 #pragma once
 
 #include <stdint.h>
+#include <memory>
 
 namespace Engine{
 
 class ElementBuffer{
 public:
     ~ElementBuffer();
+    ElementBuffer();
 
-    static ElementBuffer* create();
+    static std::shared_ptr<ElementBuffer> create();
 
     void bind();
     void unbind();
@@ -17,7 +19,6 @@ public:
     void setData(unsigned int *indices, uint32_t size);
 
 private:
-    ElementBuffer();
 
     uint32_t _id;
 };

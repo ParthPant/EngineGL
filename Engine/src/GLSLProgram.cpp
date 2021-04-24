@@ -96,8 +96,8 @@ void GLSLProgram::compile(std::string const &filename,  GLuint id)
 void GLSLProgram::bind()
 {
     glUseProgram(_programID);
-    for (int i = 0; i < _numAttributes; i++) 
-        glEnableVertexAttribArray(i);
+    //for (int i = 0; i < _numAttributes; i++) 
+        //glEnableVertexAttribArray(i);
 }
 
 void GLSLProgram::unbind()
