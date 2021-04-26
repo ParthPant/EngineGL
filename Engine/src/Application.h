@@ -2,10 +2,6 @@
 
 #include "GLSLProgram.h"
 #include "Layers.h"
-#include "Renderer/ElementBuffer.h"
-#include "Renderer/VertexArray.h"
-#include "Renderer/VertexBuffer.h"
-#include "Renderer/VertexLayout.h"
 #include "Window.h"
 #include "ImGuiLayer.h"
 #include <memory>
@@ -43,13 +39,6 @@ protected:
     ImGuiLayer* _imGuiLayer;
     LayerStack _layers;
     bool _running;
-
-    std::shared_ptr<VertexBuffer> _vbo;
-    std::shared_ptr<VertexLayout> _layout;
-    std::shared_ptr<ElementBuffer> _ibo;
-    std::shared_ptr<VertexArray> _vao;
-
-    GLSLProgram _program;
 };
 
 Application* CreateApplication();

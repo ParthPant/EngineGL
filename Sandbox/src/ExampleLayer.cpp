@@ -11,50 +11,53 @@
 
 void ExampleLayer::onAttach()
 {
-    _spriteBatch.init();
-    _program.compileShaders("/home/parth/dev/opengl/Sandbox/res/shaders/colorshading.vert",
-                            "/home/parth/dev/opengl/Sandbox/res/shaders/colorshading.frag");
+    float vertices[] = {
+       -0.5f,  0.0f,  0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+        0.5f,  0.0f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+        0.0f,  0.5f,  0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+        0.0f, -0.5f,  0.0f, 0.0f, 0.0f, 1.0f, 1.0f
+    };
 
-    _program.addAttribute("vertexPosition");
-    _program.addAttribute("vertexColor");
-    _program.addAttribute("vertexUV");
-    _program.linkShaders();
+    unsigned int indices[] = {
+        0,1,2,
+        0,1,3
+    };
 
-    _texture = Engine::GLTexture::create("/home/parth/dev/opengl/Sandbox/res/textures/ethereum.png");
+    _layout.reset( new Engine::VertexLayout({{Engine::ShaderDataType::Float3, "Position"}
+                                    ,{Engine::ShaderDataType::Float4, "Color"}
+                                    }));
+                 
+    _vbo = Engine::VertexBuffer::create();
+    _vbo->setData(vertices, sizeof(vertices));
+    _vbo->setLayout(_layout);
 
-    int width = Engine::Application::getApplication()->getWindow()->getScreenWidth();
-    int height = Engine::Application::getApplication()->getWindow()->getScreenHeight();
-    _camera.init(width, height);
+    _ibo = Engine::ElementBuffer::create();
+    _ibo->setData(indices, sizeof(indices));
+
+    _vao = Engine::VertexArray::create();
+    _vao->addVertexBuffer(_vbo);
+    _vao->addElementBuffer(_ibo);
+
+    _shader = std::make_shared<Engine::GLSLProgram>();
+    _shader->compileShaders("/home/parth/dev/opengl/Sandbox/res/shaders/simpleshader.vert",
+                            "/home/parth/dev/opengl/Sandbox/res/shaders/simpleshader.frag");
+    _shader->linkShaders();
+    _vao->unbind();
+
+    _renderer = std::make_unique<Engine::Renderer>();
+    _camera = std::make_shared<Engine::OrthographicCamera>(-1.6f, 1.6f, -0.9f, 0.9f);
+    _camera->setPosition({0, 0, 0});
 }
 
 void ExampleLayer::onUpdate()
 {
-    _camera.update();
-
-    _program.bind();
-
-    glm::mat4 P = _camera.getCamMatrix();
-    GLint uniform_p = _program.getUniformLocation("P");
-    glUniformMatrix4fv(uniform_p, 1, GL_FALSE, &P[0][0]);
-
-    glActiveTexture(GL_TEXTURE0);
-    GLint sampler = _program.getUniformLocation("sampler");
-    glUniform1i(sampler, 0);
-
-    _spriteBatch.begin();
-    
-    _spriteBatch.draw(glm::vec4(_positionx, 0, 500, 500), glm::vec4(0, 0, 1, 1), 0, _texture.id, {255, 255, 255, 255});
-
-    _spriteBatch.end();
-
-    _texture.unbind();
-    _spriteBatch.renderBatch();
-    _program.unbind();
+    _renderer->beginScene(_camera);
+    _renderer->submit(_shader, _vao);
+    _renderer->endScene();
 }
 
 void ExampleLayer::onDetach()
 {
-    Engine::TRACE("{} detached", _name);
 }
 
 void ExampleLayer::onEvent(Engine::Event &e)
@@ -63,5 +66,4 @@ void ExampleLayer::onEvent(Engine::Event &e)
 
 void ExampleLayer::onImGuiRender()
 {
-    ImGui::SliderFloat("X position", &_positionx, 0, 500);
 }

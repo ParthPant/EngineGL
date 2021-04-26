@@ -6,7 +6,10 @@
 #include "GLTexture.h"
 #include "Layers.h"
 #include "Application.h"
-#include "SpriteBatch.h"
+#include "Renderer/Renderer.h"
+#include "Renderer/VertexArray.h"
+#include "Renderer/VertexBuffer.h"
+#include "Renderer/VertexLayout.h"
 #include <string>
 
 enum class GameState{
@@ -19,7 +22,6 @@ class ExampleLayer : public Engine::Layer
 public:
     ExampleLayer(std::string const &name)
         :Layer(name)
-        ,_texture(0, 0, 0)
     {
     }
     
@@ -30,11 +32,13 @@ public:
     void onImGuiRender() override;
 
 private:
-    Engine::GLSLProgram _program;
-    Engine::SpriteBatch _spriteBatch;
-    Engine::GLTexture _texture;
-    Engine::Camera2D _camera;
 
-    float _positionx = 0;
+    std::shared_ptr<Engine::VertexBuffer> _vbo;
+    std::shared_ptr<Engine::ElementBuffer> _ibo;
+    std::shared_ptr<Engine::VertexArray> _vao;
+    std::shared_ptr<Engine::VertexLayout> _layout;
+    std::shared_ptr<Engine::GLSLProgram> _shader;
+    std::unique_ptr<Engine::Renderer> _renderer;
+    std::shared_ptr<Engine::OrthographicCamera> _camera;
 };
 
