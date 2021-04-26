@@ -1,9 +1,11 @@
 #include "InputManager.h"
+#include "SDL_keyboard.h"
+#include "SDL_mouse.h"
+#include "fwd.hpp"
 
 namespace Engine{
 
 InputManager::InputManager()
-    :_mousecoords(0.0f)
 {
 }
 
@@ -11,30 +13,28 @@ InputManager::~InputManager()
 {
 }
 
-void InputManager::pressKey(unsigned int const key_id)
+uint8_t InputManager::getMouseState()
 {
-    _keymap[key_id] = true;
-}
-
-void InputManager::releaseKey(unsigned int const key_id)
-{
-    _keymap[key_id] = false;
+    if (SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
+        return 1;
+    if (SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(2))
+        return 2;
+    if (SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(3))
+        return 3;
+    else return 0;
 }
 
 bool InputManager::isKeyPressed(unsigned int const key_id)
 {
-    auto it = _keymap.find(key_id);
-
-    if (it != _keymap.end())
-        return _keymap[key_id];
-
-    return false;
+    uint8_t const *state = SDL_GetKeyboardState(NULL);
+    return state[SDL_GetScancodeFromKey(key_id)];
 }
 
-void InputManager::setMouseCoords(float x, float y)
+glm::vec2 InputManager::getMouseCoords()
 {
-    _mousecoords.x = x;
-    _mousecoords.y = y;
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    return glm::vec2(x, y);
 }
 
 }

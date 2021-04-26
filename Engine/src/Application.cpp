@@ -25,6 +25,8 @@ Application::Application(std::string const & name)
     _window = std::make_unique<Window>();
     _window->setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
     _window->createWindow(_name, 1280, 720, 0);
+    _fpslimiter = std::make_unique<FPSLimiter>();
+    _fpslimiter->setTargetFPS(60.0f);
     RenderCommand::ClearColor({0.1f, 0.1f, 0.1f, 1.0f});
 
     _imGuiLayer = new ImGuiLayer();
@@ -35,6 +37,7 @@ void Application::run()
 {
     while(_running)
     {
+        _fpslimiter->begin();
         _window->processInput();
     
         RenderCommand::Clear();
@@ -50,6 +53,7 @@ void Application::run()
         _imGuiLayer->imGuiEnd();
 
         _window->swapBuffers();
+        _fpslimiter->end();
     }
 }
 

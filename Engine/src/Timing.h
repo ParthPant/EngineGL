@@ -12,6 +12,8 @@ public:
 
     void setTargetFPS(float const targetfps){_targetfps = targetfps;}
     float getFPS(){calculateFPS(); return _fps;};
+
+    static float Deltatime;
 private:
     float _targetfps;
     float _fps;

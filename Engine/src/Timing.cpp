@@ -3,6 +3,8 @@
 
 namespace Engine{
 
+float FPSLimiter::Deltatime = 1/60.0f * 1000.0;
+
 FPSLimiter::FPSLimiter()
 {
 }
@@ -14,9 +16,9 @@ void FPSLimiter::begin()
 
 void FPSLimiter::end()
 {
-    float frameTicks = _startticks - SDL_GetTicks();
-    if (1000.0f / _targetfps > frameTicks)
-       SDL_Delay(1000.0f/_targetfps - frameTicks);
+    Deltatime = SDL_GetTicks() - _startticks;
+    if (1000.0f / _targetfps > Deltatime)
+       SDL_Delay(1000.0f/_targetfps - Deltatime);
 }
 
 void FPSLimiter::init(float const targetfps)

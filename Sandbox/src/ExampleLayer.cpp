@@ -7,6 +7,7 @@
 #include "Log.h"
 #include "SDL_keycode.h"
 #include "imgui.h"
+#include "InputManager.h"
 #include <memory>
 
 void ExampleLayer::onAttach()

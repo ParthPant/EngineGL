@@ -4,6 +4,7 @@
 #include "Layers.h"
 #include "Window.h"
 #include "ImGuiLayer.h"
+#include "Timing.h"
 #include <memory>
 
 namespace Engine{
@@ -35,6 +36,8 @@ protected:
     std::unique_ptr<Window> _window;
     static std::unique_ptr<Application> _app;
     std::string _name;
+
+    std::unique_ptr<FPSLimiter> _fpslimiter;
 
     ImGuiLayer* _imGuiLayer;
     LayerStack _layers;
