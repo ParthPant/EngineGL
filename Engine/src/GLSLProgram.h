@@ -18,7 +18,7 @@ public:
     void unbind();
     void addAttribute(std::string const &name);
 
-    void uploadUniformMat4(std::string const &name, glm::mat4 &mat)
+    void uploadUniformMat4(std::string const &name, glm::mat4 const &mat)
     {
         uint32_t loc = getUniformLocation(name);
         glUniformMatrix4fv(loc, 1, GL_FALSE, &mat[0][0]);
@@ -33,7 +33,7 @@ public:
         uint32_t loc = getUniformLocation(name);
         glUniform1f(loc, floatpoint);
     }
-    void uploadUniformFloat3(std::string const &name, glm::vec3 &vec)
+    void uploadUniformFloat3(std::string const &name, glm::vec3 const &vec)
     {
         uint32_t loc = getUniformLocation(name);
         glUniform3fv(loc, 1, &vec[0]);

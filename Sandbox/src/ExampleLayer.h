@@ -40,5 +40,7 @@ private:
     std::shared_ptr<Engine::GLSLProgram> _shader;
     std::unique_ptr<Engine::Renderer> _renderer;
     std::shared_ptr<Engine::OrthographicCamera> _camera;
+
+    float _transform[3];
 };
 

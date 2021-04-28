@@ -27,6 +27,8 @@ Application::Application(std::string const & name)
     _window->createWindow(_name, 1280, 720, 0);
     _fpslimiter = std::make_unique<FPSLimiter>();
     _fpslimiter->setTargetFPS(60.0f);
+
+    RenderCommand::Init();
     RenderCommand::ClearColor({0.1f, 0.1f, 0.1f, 1.0f});
 
     _imGuiLayer = new ImGuiLayer();

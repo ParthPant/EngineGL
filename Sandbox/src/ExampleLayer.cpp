@@ -53,7 +53,7 @@ void ExampleLayer::onAttach()
 void ExampleLayer::onUpdate()
 {
     _renderer->beginScene(_camera);
-    _renderer->submit(_shader, _vao);
+    _renderer->submit(_shader, _vao, glm::translate(glm::mat4(1.0f), {_transform[0], _transform[1], _transform[2]}));
     _renderer->endScene();
 }
 
@@ -67,4 +67,7 @@ void ExampleLayer::onEvent(Engine::Event &e)
 
 void ExampleLayer::onImGuiRender()
 {
+    ImGui::Begin("Transform");
+    ImGui::DragFloat3("position", _transform, 0.1f);
+    ImGui::End();
 }

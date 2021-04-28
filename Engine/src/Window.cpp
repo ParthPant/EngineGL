@@ -126,9 +126,6 @@ int Window::createWindow(std::string const &name, int width, int height, unsigne
     }
 
     
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     //set VSYNC
     SDL_GL_SetSwapInterval(1);
 

@@ -12,6 +12,7 @@ class RenderCommand{
 public:
     static void ClearColor(glm::vec4 const &color);
     static void Clear();
+    static void Init();
 };
 
 class Renderer{
@@ -22,7 +23,7 @@ public:
     //~Renderer();
 
     void beginScene(std::shared_ptr<OrthographicCamera>& camera);
-    void submit(std::shared_ptr<GLSLProgram>& shader, std::shared_ptr<VertexArray>& vao);
+    void submit(std::shared_ptr<GLSLProgram>& shader, std::shared_ptr<VertexArray>& vao, glm::mat4 const &transform);
     void endScene();
 
 private:
