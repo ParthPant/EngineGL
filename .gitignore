@@ -1,5 +1,6 @@
 .clangd/
 .kdev4/
+.cache/
 
 build/
 

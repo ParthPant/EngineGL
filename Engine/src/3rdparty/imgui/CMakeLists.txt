@@ -27,5 +27,6 @@ get_filename_component(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
 target_include_directories(imgui PRIVATE ${PARENT_DIR}/glad/include) 
 target_include_directories(imgui PRIVATE ${SDL2_INCLUDE_DIRS}) 
 target_include_directories(imgui PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}) 
+target_compile_definitions(imgui PUBLIC -DIMGUI_IMPL_OPENGL_LOADER_GLAD)
 
 target_link_libraries(imgui PRIVATE glad ${CMAKE_DL_LIBS})

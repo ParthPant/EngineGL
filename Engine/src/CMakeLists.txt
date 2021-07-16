@@ -57,5 +57,5 @@ set(global_SRC
 add_library(${PROJECT_NAME} ${global_SRC})
 add_compile_options(-extra-arg-before=-xc++)
 
-target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} SDL2::SDL2)
 target_link_libraries(${PROJECT_NAME} glad ${CMAKE_DL_LIBS} spdlog stb_image glm imgui)

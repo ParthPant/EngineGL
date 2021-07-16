@@ -19,4 +19,4 @@ include_directories(${CMAKE_SOURCE_DIR}/Engine/src/3rdparty/glm/glm)
 add_executable(${PROJECT_NAME} ${game_SRC})
 
 target_link_libraries(${PROJECT_NAME} engine)
-target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} SDL2::SDL2)

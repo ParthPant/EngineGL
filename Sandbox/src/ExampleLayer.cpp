@@ -40,8 +40,8 @@ void ExampleLayer::onAttach()
     _vao->addElementBuffer(_ibo);
 
     _shader = std::make_shared<Engine::GLSLProgram>();
-    _shader->compileShaders("/home/parth/dev/opengl/Sandbox/res/shaders/simpleshader.vert",
-                            "/home/parth/dev/opengl/Sandbox/res/shaders/simpleshader.frag");
+    _shader->compileShaders("/home/parth/dev/EngineGL/Sandbox/res/shaders/simpleshader.vert",
+                            "/home/parth/dev/EngineGL/Sandbox/res/shaders/simpleshader.frag");
     _shader->linkShaders();
     _vao->unbind();
 
